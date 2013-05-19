@@ -1,0 +1,18 @@
+[user]
+	name = rlinehan
+	email = ruth@puppetlabs.com
+[merge]
+  conflictstyle = diff3
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+[alias]
+  lg = "log --graph --oneline"
+[rerere]
+  enabled = 1
+[core]
+	editor = vim
+	excludesfile = ~/.git-ignore
+	autocrlf = input
+	safecrlf = true
