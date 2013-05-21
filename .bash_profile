@@ -15,8 +15,16 @@ then
 
   source ~/.rvm/scripts/rvm
 else
-  export GIT_PS1_SHOWUPSTREAM="auto"
-  PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
+  GIT_PS1_SHOWDIRTYSTATE=1
+  GIT_PS1_SHOWSTASHSTATE=1
+  #GIT_PS1_SHOWUNTRACKEDFILES=1
+  #GIT_PS1_DESCRIBE_STYLE="branch"
+  #GIT_PS1_SHOWUPSTREAM="auto git"
+
+  get_sha() {
+    git rev-parse --short HEAD 2>/dev/null
+  }
+  PS1='\u@\h:\w$(__git_ps1 " (%s:$(get_sha))")\$ '
 fi
 
 source ~/.git-completion.bash
