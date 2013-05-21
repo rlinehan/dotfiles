@@ -23,12 +23,13 @@ set laststatus=2
 " Format the statusline
 "set statusline=[%n]\ %<%.99f%m%r%h\ %w\ \ %{CurDir()}%h\%=%-16(\ %l/%L,\ %c%V\ %{GitBranch()}\ %)
 "set statusline=[%n]\ %<%.99f%m%r%h\ %w\ \ %{CurDir()}%h\%=%-16(\ %l/%L,\ %c%V\ %{fugitive#statusline()}\ %)
+set encoding=utf-8
 
 set showmatch   " show matching brackets
 set showcmd   " show (partial) command in status line
 
 set wildmenu
-set wildmode=list:longest,full
+"set wildmode=list:longest,full
 
 " Searching
 set incsearch   " incremental search
