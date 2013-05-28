@@ -3,13 +3,15 @@ for project in puppet facter; do
 done
 PATH=/usr/local/bin:$PATH
 
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
 export CC=/usr/bin/gcc-4.2
+
+export EDITOR=vim
 
 if which rvm &> /dev/null
 then
   [[ -s "$HOME/.rvm/contrib/ps1_functions" ]] && source "$HOME/.rvm/contrib/ps1_functions"
-
-  PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
   ps1_set --notime
 

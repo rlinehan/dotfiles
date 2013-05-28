@@ -1,6 +1,6 @@
 [user]
-	name = Ruth Linehan
-	email = ruth@puppetlabs.com
+  name = Ruth Linehan
+  email = ruth@puppetlabs.com
 [merge]
   conflictstyle = diff3
 [color]
@@ -8,11 +8,17 @@
   status = auto
   branch = auto
 [alias]
-  lg = "log --graph --oneline"
+  lg = "log --pretty=format:'%C(yellow)%h%C(reset) %s %C(cyan)%ar%C(reset) %C(blue)%an%C(reset) %C(green)%d%C(reset)' --graph --date-order"
+  co = "checkout"
+  st = "status"
+  rt = "remote"
+  ra = "!git remote add $1 git@github.com:$1/$(basename $(git remote show -n origin | grep Fetch | cut -d: -f2-))"
 [rerere]
   enabled = 1
 [core]
-	editor = vim
-	excludesfile = ~/.git-ignore
-	autocrlf = input
-	safecrlf = true
+  editor = vim
+  excludesfile = ~/.git-ignore
+  autocrlf = input
+  safecrlf = true
+[web]
+  browser = open
