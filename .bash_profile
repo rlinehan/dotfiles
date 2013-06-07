@@ -31,3 +31,9 @@ fi
 
 source ~/.git-completion.bash
 
+if [ -f ~/.bashrc ]; then
+       . ~/.bashrc
+fi
+
+export PATH
+
