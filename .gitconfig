@@ -12,7 +12,7 @@
   co = "checkout"
   st = "status"
   rt = "remote"
-  ra = "! f() { git remote add $1 git@github.com:$1/$(basename $(git remote show -n origin | grep Fetch | cut -d: -f2-));}; f"
+  ra = "! f() { git remote add $1 git@github.com:$1/$(basename $(git remote show -n origin | grep Fetch | cut -d: -f2-)); git remote -v;}; f"
   cl = "! f() { git clone git@github.com:rlinehan/$1.git ;}; f"
 [rerere]
   enabled = 1
