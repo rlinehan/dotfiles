@@ -23,3 +23,5 @@
   safecrlf = true
 [web]
   browser = open
+[push]
+  default = current
