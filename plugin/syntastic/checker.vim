@@ -27,16 +27,17 @@ function! g:SyntasticChecker.New(args)
     return newObj
 endfunction
 
-function! g:SyntasticChecker.filetype()
+function! g:SyntasticChecker.getFiletype()
     return self._filetype
 endfunction
 
-function! g:SyntasticChecker.name()
+function! g:SyntasticChecker.getName()
     return self._name
 endfunction
 
 function! g:SyntasticChecker.getLocList()
     let list = self._locListFunc()
+    call syntastic#util#debug('getLocList: checker ' . self._filetype . '/' . self._name . ' returned ' . v:shell_error)
     call self._populateHighlightRegexes(list)
     return g:SyntasticLoclist.New(list)
 endfunction
@@ -52,6 +53,8 @@ endfunction
 function! g:SyntasticChecker.isAvailable()
     return self._isAvailableFunc()
 endfunction
+
+" Private methods {{{1
 
 function! g:SyntasticChecker._populateHighlightRegexes(list)
     let list = a:list

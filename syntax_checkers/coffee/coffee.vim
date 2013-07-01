@@ -9,20 +9,26 @@
 "             See http://sam.zoy.org/wtfpl/COPYING for more details.
 "
 "============================================================================
+"
+" Note: this script requires CoffeeScript version 1.6.2 or newer.
+"
 if exists("g:loaded_syntastic_coffee_coffee_checker")
     finish
 endif
 let g:loaded_syntastic_coffee_coffee_checker=1
 
 function! SyntaxCheckers_coffee_coffee_IsAvailable()
-    return executable("coffee")
+    return executable("coffee") &&
+        \ syntastic#util#versionIsAtLeast(syntastic#util#parseVersion('coffee --version 2>' . syntastic#util#DevNull()), [1,6,2])
 endfunction
 
 function! SyntaxCheckers_coffee_coffee_GetLocList()
     let makeprg = syntastic#makeprg#build({
-                \ 'exe': 'coffee',
-                \ 'args': '--lint',
-                \ 'subchecker': 'coffee' })
+        \ 'exe': 'coffee',
+        \ 'args': '-cp',
+        \ 'filetype': 'coffee',
+        \ 'subchecker': 'coffee' })
+
     let errorformat =
         \ '%E%f:%l:%c: %trror: %m,' .
         \ 'Syntax%trror: In %f\, %m on line %l,' .
