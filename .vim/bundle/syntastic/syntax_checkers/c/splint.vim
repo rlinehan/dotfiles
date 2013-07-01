@@ -16,10 +16,10 @@
 "
 "   let g:syntastic_splint_config_file = '.config'
 
-if exists("loaded_splint_syntax_checker")
+if exists("g:loaded_syntastic_c_splint_checker")
     finish
 endif
-let loaded_splint_syntax_checker = 1
+let g:loaded_syntastic_c_splint_checker = 1
 
 function! SyntaxCheckers_c_splint_IsAvailable()
     return executable("splint")
@@ -33,6 +33,7 @@ function! SyntaxCheckers_c_splint_GetLocList()
     let makeprg = syntastic#makeprg#build({
         \ 'exe': 'splint',
         \ 'post_args': '-showfunc -hints +quiet ' . syntastic#c#ReadConfig(g:syntastic_splint_config_file),
+        \ 'filetype': 'c',
         \ 'subchecker': 'splint' })
 
     let errorformat =

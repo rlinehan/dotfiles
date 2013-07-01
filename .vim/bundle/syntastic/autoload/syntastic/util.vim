@@ -43,18 +43,20 @@ function! syntastic#util#parseShebang()
     return {'exe': '', 'args': []}
 endfunction
 
-" Verify that the 'installed' version is at the 'required' version, if not
-" better.
+" Run 'command' in a shell and parse output as a version string.
+" Returns an array of version components.
+function! syntastic#util#parseVersion(command)
+    return split(matchstr( system(a:command), '\v^\D*\zs\d+(\.\d+)+\ze' ), '\.')
+endfunction
+
+" Verify that the 'installed' version is at least the 'required' version.
 "
-" 'installed' and 'required' must be arrays.  Only the
-" first three elements (major, minor, patch) are looked at.
-"
-" Either array may be less than three elements. The "missing" elements
-" will be assumed to be '0' for the purposes of checking.
+" 'installed' and 'required' must be arrays. If they have different lengths,
+" the "missing" elements will be assumed to be 0 for the purposes of checking.
 "
 " See http://semver.org for info about version numbers.
 function! syntastic#util#versionIsAtLeast(installed, required)
-    for index in [0,1,2]
+    for index in range(max([len(a:installed), len(a:required)]))
         if len(a:installed) <= index
             let installed_element = 0
         else
@@ -120,10 +122,14 @@ endfunction
 " Returns unique elements in a list
 function! syntastic#util#unique(list)
     let seen = {}
+    let uniques = []
     for e in a:list
-        let seen[e] = 1
+        if !has_key(seen, e)
+            let seen[e] = 1
+            call add(uniques, e)
+        endif
     endfor
-    return copy(keys(seen))
+    return uniques
 endfunction
 
 function! syntastic#util#debug(msg)
@@ -132,13 +138,21 @@ function! syntastic#util#debug(msg)
     endif
 endfunction
 
+function! syntastic#util#info(msg)
+    echomsg "syntastic: info: " . a:msg
+endfunction
+
+function! syntastic#util#warn(msg)
+    echomsg "syntastic: warning: " . a:msg
+endfunction
+
 function! syntastic#util#deprecationWarn(msg)
     if index(s:deprecationNoticesIssued, a:msg) >= 0
         return
     endif
 
     call add(s:deprecationNoticesIssued, a:msg)
-    echomsg "syntastic: warning: " . a:msg
+    call syntastic#util#warn(a:msg)
 endfunction
 
 let &cpo = s:save_cpo
