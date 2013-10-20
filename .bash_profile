@@ -5,7 +5,7 @@ PATH=/usr/local/bin:$PATH
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
-export CC=/usr/bin/gcc-4.2
+export CC=gcc-4.2
 
 export EDITOR=vim
 

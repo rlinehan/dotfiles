@@ -1,2 +1,8 @@
---all-types
+#--all-types
 --smart-case
+--ignore-dir=dist
+--ignore-dir=bower_components
+--ignore-dir=node_modules
+--color
+--pager=less -FXR
+--ignore-file=firstlinematch:/.{200}/
