@@ -49,8 +49,8 @@ runtime macros/matchit.vim
 
 syntax enable
 set background=dark
-"set t_Co=16
-"let g:solarized_termtrans=1
+set t_Co=16
+let g:solarized_termtrans=1
 colorscheme solarized
 highlight clear SignColumn
 
