@@ -14,3 +14,24 @@ done with previous versions of git.
 To update a plugin from the upstream repo
 
   `git subtree pull --prefix .vim/bundle/<plugin name> https://github.com/<author>/<plugin name>.git master --squash`
+
+The gitconfig now includes aliases for adding and updating vim plugins:
+
+   `git vimadd <author> <plugin name>` to add
+
+   `git vimupdate <author> <plugin name>` to update
+
+# Current vim plugins installed
+* [mileszs/ack.vim](https://github.com/mileszs/ack.vim)
+* [kien/ctrlp.vim](https://github.com/kien/ctrlp.vim)
+* [scrooloose/nerdtree](https://github.com/scrooloose/nerdtree)
+* [scrooloose/syntastic](https://github.com/scrooloose/syntastic)
+* [altercation/vim-colors-solarized](https://github.com/altercation/vim-colors-solarized)
+* [tpope/vim-fugitive](https://github.com/tpope/vim-fugitive)
+* [airblade/vim-gitgutter](https://github.com/airblade/vim-gitgutter)
+* [Lokaltog/vim-powerline](https://github.com/Lokaltog/vim-powerline) (branch `develop`)
+* [godlygeek/tabular](https://github.com/godlygeek/tabular)
+* [tpope/vim-endwise](https://github.com/tpope/vim-endwise)
+* [rodjek/vim-puppet](https://github.com/rodjek/vim-puppet)
+* [jtmkrueger/vim-c-cr](https://github.com/jtmkrueger/vim-c-cr)
+* bufexplorer
