@@ -1,6 +1,7 @@
 for project in puppet facter; do
-   export RUBYLIB="$HOME/Development/$project/lib:$RUBYLIB"
+   export RUBYLIB="$HOME/dev/$project/lib:$RUBYLIB"
 done
+
 PATH=/usr/local/bin:$PATH
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
