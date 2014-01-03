@@ -6,6 +6,10 @@ PATH=/usr/local/bin:$PATH
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
+if which rvm &> /dev/null; then
+  [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+fi
+
 export CC=gcc-4.2
 
 export EDITOR=vim
