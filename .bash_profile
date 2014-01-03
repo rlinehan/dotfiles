@@ -12,7 +12,8 @@ export EDITOR=vim
 
 # source:
 # http://vvv.tobiassjosten.net/bash/dynamic-prompt-with-git-and-ansi-colors/
-# and RVM contrib whatever thing
+# and RVM contrib ps1_functions
+# (https://github.com/wayneeseguin/rvm/blob/master/contrib/ps1_functions)
 #
 # Configure colors, if available.
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -21,22 +22,34 @@ if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
   c_user='\[\033[32m\]'
   c_host='\[\033[36m\]'
   c_git_branch='\[\033[5;34m\]'
-  c_git_clean='\[\e[0;36m\]'
-  c_git_dirty='\[\e[0;35m\]'
   c_path='\[\033[35m\]'
 else
   c_reset=
+  c_user_root=
   c_user=
+  c_host=
+  c_git_branch=
   c_path=
-  c_git_clean=
-  c_git_dirty=
 fi
 
-GIT_PS1_SHOWDIRTYSTATE=1
-GIT_PS1_SHOWUPSTREAM="auto git"
+GIT_PS1_SHOWDIRTYSTATE=
+GIT_PS1_STATESEPARATOR=''
 
-get_sha() {
+ps1_git_sha() {
   git rev-parse --short HEAD 2>/dev/null
+}
+
+# This is taken directly out of the RVM ps1_functions
+# (https://github.com/wayneeseguin/rvm/blob/master/contrib/ps1_functions), because I prefer it
+# over the __git_ps1 SHOWDIRTYSTATE symbols - I like that this tells you
+# what was deleted in addition to added.
+ps1_git_status()
+{
+  local git_status="$(git status 2>/dev/null)"
+
+  [[ "${git_status}" = *deleted* ]]                    && printf "%s" "-"
+  [[ "${git_status}" = *Untracked[[:space:]]files:* ]] && printf "%s" "+"
+  [[ "${git_status}" = *modified:* ]]                  && printf "%s" "*"
 }
 
 ps1_git()
@@ -44,7 +57,7 @@ ps1_git()
   if ! git rev-parse --git-dir > /dev/null 2>&1; then
     return 0
   else
-    printf "%s" '$(__git_ps1 " (git:%s:$(get_sha))")'
+    printf "%s" '$(__git_ps1 " (git:%s$(ps1_git_status):$(ps1_git_sha))")'
   fi
 }
 
@@ -66,6 +79,7 @@ if [ -f ~/.bashrc ]; then
   . ~/.bashrc
 fi
 
-source /Users/ruth/.git-completion.bash
+source ~/.git-completion.bash
+source ~/.git-prompt.sh
 export PATH
 
