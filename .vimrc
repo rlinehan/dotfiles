@@ -78,6 +78,9 @@ let ruby_space_errors=1   " highlight tab/space mixing in ruby files
 highlight RedundantSpaces ctermbg=red
 match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
 
+let javascript_enable_domhtmlcss=1
+let javascript_ignore_javaScriptdoc=1
+
 set number  " line numbers
 set scrolloff=5
 let loaded_matchparen=1
