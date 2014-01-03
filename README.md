@@ -34,4 +34,5 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 * [tpope/vim-endwise](https://github.com/tpope/vim-endwise)
 * [rodjek/vim-puppet](https://github.com/rodjek/vim-puppet)
 * [jtmkrueger/vim-c-cr](https://github.com/jtmkrueger/vim-c-cr)
+* [pangloss/vim-javascript](https://github.com/pangloss/vim-javascript)
 * bufexplorer
