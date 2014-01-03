@@ -35,4 +35,5 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 * [jtmkrueger/vim-c-cr](https://github.com/jtmkrueger/vim-c-cr)
 * [bling/vim-bufferline](https://github.com/bling/vim-bufferline)
 * [bling/vim-airline](https://github.com/bling/vim-airline)
+* [pangloss/vim-javascript](https://github.com/pangloss/vim-javascript)
 * bufexplorer
