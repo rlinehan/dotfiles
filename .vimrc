@@ -45,6 +45,8 @@ set listchars=eol:$,tab:>-,trail:-,extends:>,precedes:<
 filetype plugin on    " enable filetype detection
 filetype indent on    " enable language-depenent indentation
 
+runtime macros/matchit.vim
+
 syntax enable
 set background=dark
 "set t_Co=16
