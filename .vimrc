@@ -54,9 +54,25 @@ set background=dark
 colorscheme solarized
 highlight clear SignColumn
 
-let g:Powerline_symbols = 'fancy'
-let g:Powerline_colorscheme = 'solarized16'
-"let g:Powerline_theme = 'solarized16'
+let g:bufferline_fname_mod = ':p:.'
+let g:bufferline_echo = 0
+
+let g:airline_powerline_fonts = 1
+let g:airline_detect_modified = 0
+"let g:airline_theme = 'solarized'
+let g:airline_theme = 'luna'
+
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+let g:airline_left_sep = '⮀'
+let g:airline_left_alt_sep = '⮁'
+let g:airline_right_sep = '⮂'
+let g:airline_right_alt_sep = '⮃'
+let g:airline_symbols.branch = '⭠'
+let g:airline_symbols.readonly = '⭤'
+let g:airline_symbols.linenr = '⭡'
+let g:airline_inactive_collapse=1
 
 let ruby_space_errors=1   " highlight tab/space mixing in ruby files
 highlight RedundantSpaces ctermbg=red
