@@ -5,43 +5,28 @@
 "             kstep <me@kstep.me>
 "
 "============================================================================
+
 if exists("g:loaded_syntastic_python_flake8_checker")
     finish
 endif
-let g:loaded_syntastic_python_flake8_checker=1
+let g:loaded_syntastic_python_flake8_checker = 1
 
-function! SyntaxCheckers_python_flake8_IsAvailable()
-    return executable('flake8')
+let s:save_cpo = &cpo
+set cpo&vim
+
+function! SyntaxCheckers_python_flake8_GetHighlightRegex(item)
+    return SyntaxCheckers_python_pyflakes_GetHighlightRegex(a:item)
 endfunction
 
-function! SyntaxCheckers_python_flake8_GetHighlightRegex(i)
-    if match(a:i['text'], 'is assigned to but never used') > -1
-                \ || match(a:i['text'], 'imported but unused') > -1
-                \ || match(a:i['text'], 'undefined name') > -1
-                \ || match(a:i['text'], 'redefinition of') > -1
-                \ || match(a:i['text'], 'referenced before assignment') > -1
-                \ || match(a:i['text'], 'duplicate argument') > -1
-                \ || match(a:i['text'], 'after other statements') > -1
-                \ || match(a:i['text'], 'shadowed by loop variable') > -1
-
-        let term = split(a:i['text'], "'", 1)[1]
-        return '\V\<'.term.'\>'
-    endif
-    return ''
-endfunction
-
-function! SyntaxCheckers_python_flake8_GetLocList()
-    let makeprg = syntastic#makeprg#build({
-        \ 'exe': 'flake8',
-        \ 'filetype': 'python',
-        \ 'subchecker': 'flake8' })
+function! SyntaxCheckers_python_flake8_GetLocList() dict
+    let makeprg = self.makeprgBuild({})
 
     let errorformat =
-        \ '%E%f:%l: could not compile,%-Z%p^,'.
-        \ '%W%f:%l:%c: F%n %m,'.
-        \ '%W%f:%l:%c: C%n %m,'.
-        \ '%E%f:%l:%c: %t%n %m,'.
-        \ '%E%f:%l: %t%n %m,'.
+        \ '%E%f:%l: could not compile,%-Z%p^,' .
+        \ '%E%f:%l:%c: F%n %m,' .
+        \ '%W%f:%l:%c: C%n %m,' .
+        \ '%W%f:%l:%c: %.%n %m,' .
+        \ '%W%f:%l: %.%n %m,' .
         \ '%-G%.%#'
 
     return SyntasticMake({
@@ -49,6 +34,13 @@ function! SyntaxCheckers_python_flake8_GetLocList()
         \ 'errorformat': errorformat })
 endfunction
 
+runtime! syntax_checkers/python/pyflakes.vim
+
 call g:SyntasticRegistry.CreateAndRegisterChecker({
     \ 'filetype': 'python',
     \ 'name': 'flake8'})
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+
+" vim: set et sts=4 sw=4:

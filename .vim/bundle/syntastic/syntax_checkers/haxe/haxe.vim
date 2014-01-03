@@ -13,50 +13,24 @@
 if exists("g:loaded_syntastic_haxe_haxe_checker")
     finish
 endif
-let g:loaded_syntastic_haxe_haxe_checker=1
+let g:loaded_syntastic_haxe_haxe_checker = 1
 
-function! SyntaxCheckers_haxe_haxe_IsAvailable()
-    return executable('haxe')
-endfunction
+let s:save_cpo = &cpo
+set cpo&vim
 
-" start in directory a:where and walk up the parent folders until it
-" finds a file matching a:what; return path to that file
-function! s:FindInParent(what, where)
-    let here = fnamemodify(a:where, ':p')
-
-    while !empty(here)
-        let p = split(globpath(here, a:what), '\n')
-
-        if !empty(p)
-            return fnamemodify(p[0], ':p')
-        elseif here == '/'
-            break
-        endif
-
-        " we use ':h:h' rather than ':h' since ':p' adds a trailing '/'
-        " if 'here' is a directory
-        let here = fnamemodify(here, ':p:h:h')
-    endwhile
-
-    return ''
-endfunction
-
-function! SyntaxCheckers_haxe_haxe_GetLocList()
+function! SyntaxCheckers_haxe_haxe_GetLocList() dict
     if exists('b:vaxe_hxml')
         let hxml = b:vaxe_hxml
     elseif exists('g:vaxe_hxml')
         let hxml = g:vaxe_hxml
     else
-        let hxml = s:FindInParent('*.hxml', expand('%:p:h'))
+        let hxml = syntastic#util#findInParent('*.hxml', expand('%:p:h'))
     endif
     let hxml = fnamemodify(hxml, ':p')
 
     if !empty(hxml)
-        let makeprg = syntastic#makeprg#build({
-            \ 'exe': 'haxe',
-            \ 'fname': shellescape(fnameescape(fnamemodify(hxml, ':t'))),
-            \ 'filetype': 'haxe',
-            \ 'subchecker': 'haxe' })
+        let makeprg = self.makeprgBuild({
+            \ 'fname': syntastic#util#shescape(fnameescape(fnamemodify(hxml, ':t'))) })
 
         let errorformat = '%E%f:%l: characters %c-%*[0-9] : %m'
 
@@ -72,3 +46,8 @@ endfunction
 call g:SyntasticRegistry.CreateAndRegisterChecker({
     \ 'filetype': 'haxe',
     \ 'name': 'haxe'})
+
+let &cpo = s:save_cpo
+unlet s:save_cpo
+
+" vim: set et sts=4 sw=4:
