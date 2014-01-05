@@ -4,11 +4,13 @@ done
 
 PATH=/usr/local/bin:$PATH
 
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-
+# Configure RVM if it exists
 if which rvm &> /dev/null; then
-  [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+  [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" && PATH=$PATH:$HOME/.rvm/bin
 fi
+
+# Configure rbenv if it exists
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 export CC=gcc-4.2
 
