@@ -81,6 +81,8 @@ match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
 let javascript_enable_domhtmlcss=1
 let javascript_ignore_javaScriptdoc=1
 
+let g:mustache_abbreviations = 1
+
 let g:tern_map_keys=1
 let g:tern_show_arument_hints='on_hold'
 
