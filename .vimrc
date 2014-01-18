@@ -74,6 +74,9 @@ let g:airline_symbols.readonly = '⭤'
 let g:airline_symbols.linenr = '⭡'
 let g:airline_inactive_collapse=1
 
+let delimitMate_expand_cr=2
+let delimitMate_expand_space=1
+
 let ruby_space_errors=1   " highlight tab/space mixing in ruby files
 highlight RedundantSpaces ctermbg=red
 match RedundantSpaces /\s\+$\| \+\ze\t\|\t/

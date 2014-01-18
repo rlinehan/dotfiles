@@ -37,4 +37,5 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 * [bling/vim-airline](https://github.com/bling/vim-airline)
 * [pangloss/vim-javascript](https://github.com/pangloss/vim-javascript)
 * [mustache/vim-mustache-handlebars](https://github.com/mustache/vim-mustache-handlebars)
+* [Raimondi/delimitMate](https://github.com/Raimondi/delimitMate)
 * bufexplorer
