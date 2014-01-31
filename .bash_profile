@@ -5,7 +5,7 @@ done
 PATH=/usr/local/bin:$PATH
 
 # Configure RVM if it exists
-if which rvm &> /dev/null; then
+if [ -d "$HOME/.rvm/bin"  ]; then
   [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" && PATH=$PATH:$HOME/.rvm/bin
 fi
 
