@@ -1,5 +1,7 @@
-"\e[A": history-search-backward
-"\e[B": history-search-forward
-"\C-w": unix-filename-rubout
-set show-all-if-ambiguous off
-set completion-ignore-case off
+$if Bash
+  "\e[A": history-search-backward
+  "\e[B": history-search-forward
+  "\C-w": unix-filename-rubout
+  set show-all-if-ambiguous off
+  set completion-ignore-case off
+$endif
