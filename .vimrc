@@ -107,6 +107,9 @@ set noswapfile
 
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_custom_ignore = {
+  \ 'dir': 'bower_components$\|node_modules$',
+  \}
 
 map <C-n> :NERDTreeToggle<CR>
 
