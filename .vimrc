@@ -56,6 +56,7 @@ highlight clear SignColumn
 
 let g:bufferline_fname_mod = ':p:.'
 let g:bufferline_echo = 0
+let g:bufferline_rotate = 1
 
 let g:airline_powerline_fonts = 1
 let g:airline_detect_modified = 0
