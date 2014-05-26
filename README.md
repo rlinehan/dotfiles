@@ -39,4 +39,6 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 * [kien/rainbow_parentheses.vim](https://githumb.com/kien/rainbow_parentheses.vim)
 * [tpope/vim-fireplace](https://github.com/tpope/vim-fireplace)
 * [vim-scripts/paredit.vim](https://github.com/vim-scripts/paredit.vim)
+* [plasticboy/vim-markdown](https://github.com/plasticboy/vim-markdown)
+* [jratner/vim-flavored-markdown](https://github.com/jtratner/vim-flavored-markdown)
 * bufexplorer

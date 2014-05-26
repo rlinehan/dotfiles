@@ -116,6 +116,15 @@ map <C-n> :NERDTreeToggle<CR>
 
 set pastetoggle=<F2>
 
+let g:vim_markdown_folding_disabled=1
+
+augroup markdown
+    au!
+    au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
+augroup END
+
+"autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+
 " Git branch
 "function! GitBranch()
 "  let branch = system("git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* //'")
