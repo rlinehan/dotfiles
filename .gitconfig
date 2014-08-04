@@ -16,6 +16,10 @@
   cl = "! f() { git clone git@github.com:rlinehan/$1.git ;}; f"
   vimadd = "! f() { git subtree add --prefix .vim/bundle/$2 https://github.com/$1/$2.git master --squash;}; f"
   vimupdate = "! f() { git subtree pull --prefix .vim/bundle/$2 https://github.com/$1/$2.git master --squash;}; f"
+
+# given a remote and a branch, fetch the remote, merge the branch locally, and
+# push to Github
+  update = "! f() { git checkout $2 && git fetch $1 && git merge $1/$2 --ff-only && git push origin HEAD;}; f"
 [rerere]
   enabled = 1
 [core]
