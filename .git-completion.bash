@@ -570,7 +570,7 @@ __git_complete_remote_or_refspec ()
 			__gitcomp_nl "$(__git_refs)" "$pfx" "$cur_"
 		fi
 		;;
-	pull|remote)
+	pull|remote|update)
 		if [ $lhs = 1 ]; then
 			__gitcomp_nl "$(__git_refs "$remote")" "$pfx" "$cur_"
 		else
@@ -2469,6 +2469,11 @@ _git_tag ()
 		__gitcomp_nl "$(__git_refs)"
 		;;
 	esac
+}
+
+_git_update ()
+{
+  __git_complete_remote_or_refspec
 }
 
 _git_whatchanged ()
