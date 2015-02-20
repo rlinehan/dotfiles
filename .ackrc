@@ -4,6 +4,8 @@
 --ignore-dir=bower_components
 --ignore-dir=node_modules
 --ignore-dir=vendor
+--ignore-dir=.bundle
+--ignore-dir=junit
 --color
 --pager=less -FXR
---ignore-file=firstlinematch:/.{200}/
+#--ignore-file=firstlinematch:/.{200}/
