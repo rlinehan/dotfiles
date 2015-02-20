@@ -1,7 +1,3 @@
-for project in puppet facter; do
-   export RUBYLIB="$HOME/dev/$project/lib:$RUBYLIB"
-done
-
 PATH=/usr/local/bin:$HOME/bin:$PATH
 
 # Configure RVM if it exists
