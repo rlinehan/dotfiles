@@ -6,6 +6,7 @@
 --ignore-dir=vendor
 --ignore-dir=.bundle
 --ignore-dir=junit
+--ignore-dir=.idea
 --color
 --pager=less -FXR
 #--ignore-file=firstlinematch:/.{200}/
