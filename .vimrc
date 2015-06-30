@@ -95,6 +95,13 @@ au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
 
+
+" always indent 2 spaces in clojure code
+" (from https://github.com/guns/vim-clojure-static/issues/36#issuecomment-29139119)
+let g:clojure_fuzzy_indent = 1
+let g:clojure_fuzzy_indent_patterns = ['.']
+let g:clojure_fuzzy_indent_blacklist = []
+
 let g:slime_target = "tmux"
 
 let ruby_space_errors=1   " highlight tab/space mixing in ruby files
