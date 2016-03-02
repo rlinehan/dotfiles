@@ -1,7 +1,7 @@
 "============================================================================
-"File:        ycm.vim
+"File:        stylelint.vim
 "Description: Syntax checking plugin for syntastic.vim
-"Maintainer:  Val Markovic <val at markovic dot io>
+"Maintainer:  LCD 47 <lcd047 at gmail dot com>
 "License:     This program is free software. It comes without any warranty,
 "             to the extent permitted by applicable law. You can redistribute
 "             it and/or modify it under the terms of the Do What The Fuck You
@@ -10,20 +10,14 @@
 "
 "============================================================================
 
-if exists("g:loaded_syntastic_cpp_ycm_checker")
+if exists('g:loaded_syntastic_scss_stylelint_checker')
     finish
 endif
-let g:loaded_syntastic_cpp_ycm_checker = 1
-
-runtime! syntax_checkers/c/*.vim
-
-if !exists('g:loaded_youcompleteme')
-    finish
-endif
+let g:loaded_syntastic_scss_stylelint_checker = 1
 
 call g:SyntasticRegistry.CreateAndRegisterChecker({
-    \ 'filetype': 'cpp',
-    \ 'name': 'ycm',
-    \ 'redirect': 'c/ycm'})
+    \ 'filetype': 'scss',
+    \ 'name': 'stylelint',
+    \ 'redirect': 'css/stylelint'})
 
-" vim: set et sts=4 sw=4:
+" vim: set sw=4 sts=4 et fdm=marker:
