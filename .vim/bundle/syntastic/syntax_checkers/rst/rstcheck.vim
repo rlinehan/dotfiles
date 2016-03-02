@@ -5,7 +5,7 @@
 "
 "============================================================================
 
-if exists("g:loaded_syntastic_rst_rstcheck_checker")
+if exists('g:loaded_syntastic_rst_rstcheck_checker')
     finish
 endif
 let g:loaded_syntastic_rst_rstcheck_checker = 1
@@ -25,7 +25,8 @@ function! SyntaxCheckers_rst_rstcheck_GetLocList() dict
 
     let loclist = SyntasticMake({
         \ 'makeprg': makeprg,
-        \ 'errorformat': errorformat })
+        \ 'errorformat': errorformat,
+        \ 'returns': [0, 1] })
 
     for e in loclist
         if e['type'] ==? 'S'
@@ -46,4 +47,4 @@ call g:SyntasticRegistry.CreateAndRegisterChecker({
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
-" vim: set et sts=4 sw=4:
+" vim: set sw=4 sts=4 et fdm=marker:
