@@ -81,6 +81,7 @@ if [ -f ~/.bashrc ]; then
   . ~/.bashrc
 fi
 
+source ~/.lein-completion.bash
 source ~/.git-completion.bash
 source ~/.git-prompt.sh
 export PATH
