@@ -1,7 +1,7 @@
 "============================================================================
-"File:        fsc.vim
-"Description: Syntax checking plugin for syntastic.vim
-"Maintainer:  Gregor Uhlenheuer <kongo2002 at gmail dot com>
+"File:        textlint.vim
+"Description: Syntax checking plugin for syntastic
+"Maintainer:  LCD 47 <lcd047 at gmail dot com>
 "License:     This program is free software. It comes without any warranty,
 "             to the extent permitted by applicable law. You can redistribute
 "             it and/or modify it under the terms of the Do What The Fuck You
@@ -10,37 +10,31 @@
 "
 "============================================================================
 
-if exists('g:loaded_syntastic_scala_fsc_checker')
+if exists('g:loaded_syntastic_text_textlint_checker')
     finish
 endif
-let g:loaded_syntastic_scala_fsc_checker = 1
+let g:loaded_syntastic_text_textlint_checker = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! SyntaxCheckers_scala_fsc_GetLocList() dict
-    call syntastic#log#deprecationWarn('scala_options', 'scala_fsc_args')
-
-    " fsc has some serious problems with the
-    " working directory changing after being started
-    " that's why we better pass an absolute path
-    let makeprg = self.makeprgBuild({
-        \ 'args': '-Ystop-after:parser',
-        \ 'fname': syntastic#util#shexpand('%:p') })
+function! SyntaxCheckers_text_textlint_GetLocList() dict
+    let makeprg = self.makeprgBuild({ 'args_after': '-f compact' })
 
     let errorformat =
-        \ '%E%f:%l: %trror: %m,' .
-        \ '%Z%p^,' .
-        \ '%-G%.%#'
+        \ '%f: line %l\, col %c\, %tarning - %m,' .
+        \ '%f: line %l\, col %c\, %trror - %m'
 
     return SyntasticMake({
         \ 'makeprg': makeprg,
-        \ 'errorformat': errorformat })
+        \ 'errorformat': errorformat,
+        \ 'subtype': 'Style',
+        \ 'returns': [0, 1] })
 endfunction
 
 call g:SyntasticRegistry.CreateAndRegisterChecker({
-    \ 'filetype': 'scala',
-    \ 'name': 'fsc'})
+    \ 'filetype': 'text',
+    \ 'name': 'textlint'})
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

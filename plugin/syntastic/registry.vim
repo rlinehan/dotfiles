@@ -12,6 +12,7 @@ let s:_DEFAULT_CHECKERS = {
         \ 'apiblueprint':  ['drafter'],
         \ 'applescript':   ['osacompile'],
         \ 'asciidoc':      ['asciidoc'],
+        \ 'asl':           ['iasl'],
         \ 'asm':           ['gcc'],
         \ 'bro':           ['bro'],
         \ 'bemhtml':       ['bemhtmllint'],
@@ -37,7 +38,7 @@ let s:_DEFAULT_CHECKERS = {
         \ 'eruby':         ['ruby'],
         \ 'fortran':       ['gfortran'],
         \ 'glsl':          ['cgc'],
-        \ 'go':            ['go'],
+        \ 'go':            [],
         \ 'haml':          ['haml'],
         \ 'handlebars':    ['handlebars'],
         \ 'haskell':       ['hdevtools', 'hlint'],
@@ -90,8 +91,10 @@ let s:_DEFAULT_CHECKERS = {
         \ 'tex':           ['lacheck', 'chktex'],
         \ 'texinfo':       ['makeinfo'],
         \ 'text':          [],
+        \ 'trig':          ['rapper'],
+        \ 'turtle':        ['rapper'],
         \ 'twig':          ['twiglint'],
-        \ 'typescript':    ['tsc'],
+        \ 'typescript':    [],
         \ 'vala':          ['valac'],
         \ 'verilog':       ['verilator'],
         \ 'vhdl':          ['ghdl'],
@@ -102,6 +105,7 @@ let s:_DEFAULT_CHECKERS = {
         \ 'xquery':        ['basex'],
         \ 'yacc':          ['bison'],
         \ 'yaml':          ['jsyaml'],
+        \ 'yang':          ['pyang'],
         \ 'z80':           ['z80syntaxchecker'],
         \ 'zpt':           ['zptlint'],
         \ 'zsh':           ['zsh'],
@@ -164,7 +168,7 @@ function! g:SyntasticRegistry.CreateAndRegisterChecker(args) abort " {{{2
 
     if has_key(a:args, 'redirect')
         let [ft, name] = split(a:args['redirect'], '/')
-        call registry._loadCheckersFor(ft, ft ==# a:args['filetype'])
+        call registry._loadCheckersFor(ft, 1)
 
         let clone = get(registry._checkerMap[ft], name, {})
         if empty(clone)
@@ -184,7 +188,7 @@ endfunction " }}}2
 " not run).
 function! g:SyntasticRegistry.getCheckers(ftalias, hints_list) abort " {{{2
     let ft = s:_normalise_filetype(a:ftalias)
-    call self._loadCheckersFor(ft)
+    call self._loadCheckersFor(ft, 0)
 
     let checkers_map = self._checkerMap[ft]
     if empty(checkers_map)
@@ -233,7 +237,7 @@ endfunction " }}}2
 
 function! g:SyntasticRegistry.getNamesOfAvailableCheckers(ftalias) abort " {{{2
     let ft = s:_normalise_filetype(a:ftalias)
-    call self._loadCheckersFor(ft)
+    call self._loadCheckersFor(ft, 0)
     return keys(filter( copy(self._checkerMap[ft]), 'v:val.isAvailable()' ))
 endfunction " }}}2
 
@@ -320,11 +324,8 @@ function! g:SyntasticRegistry._filterCheckersByName(checkers_map, list) abort " 
     return filter( map(copy(a:list), 'get(a:checkers_map, v:val, {})'), '!empty(v:val)' )
 endfunction " }}}2
 
-function! g:SyntasticRegistry._loadCheckersFor(filetype, ...) abort " {{{2
-    " XXX: a:1 == 1 means we're being called recursively from
-    " CreateAndRegisterChecker(), by a checker redirecting to
-    " the same filetype
-    if has_key(self._checkerMap, a:filetype) && (!a:0 || !a:1)
+function! g:SyntasticRegistry._loadCheckersFor(filetype, force) abort " {{{2
+    if !a:force && has_key(self._checkerMap, a:filetype)
         return
     endif
 
