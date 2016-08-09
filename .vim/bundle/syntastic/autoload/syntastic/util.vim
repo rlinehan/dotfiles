@@ -37,12 +37,18 @@ function! syntastic#util#system(command) abort " {{{2
     let $LC_MESSAGES = 'C'
     let $LC_ALL = ''
 
+    let cmd_start = reltime()
     let out = system(a:command)
+    let cmd_time = split(reltimestr(reltime(cmd_start)))[0]
 
     let $LC_ALL = old_lc_all
     let $LC_MESSAGES = old_lc_messages
 
     let &shell = old_shell
+
+    if exists('g:_SYNTASTIC_DEBUG_TRACE')
+        call syntastic#log#debug(g:_SYNTASTIC_DEBUG_TRACE, 'system: command run in ' . cmd_time . 's')
+    endif
 
     return out
 endfunction " }}}2
@@ -120,12 +126,14 @@ function! syntastic#util#parseShebang() abort " {{{2
     return { 'exe': '', 'args': [] }
 endfunction " }}}2
 
-" Get the value of a variable.  Allow local variables to override global ones.
+" Get the value of a Vim variable.  Allow local variables to override global ones.
+function! syntastic#util#rawVar(name, ...) abort " {{{2
+    return get(b:, a:name, get(g:, a:name, a:0 > 0 ? a:1 : ''))
+endfunction " }}}2
+
+" Get the value of a syntastic variable.  Allow local variables to override global ones.
 function! syntastic#util#var(name, ...) abort " {{{2
-    return
-        \ exists('b:syntastic_' . a:name) ? b:syntastic_{a:name} :
-        \ exists('g:syntastic_' . a:name) ? g:syntastic_{a:name} :
-        \ a:0 > 0 ? a:1 : ''
+    return call('syntastic#util#rawVar', ['syntastic_' . a:name] + a:000)
 endfunction " }}}2
 
 " Parse a version string.  Return an array of version components.
@@ -240,7 +248,12 @@ function! syntastic#util#findGlobInParent(what, where) abort " {{{2
 
     let old = ''
     while here !=# ''
-        let p = split(globpath(here, a:what, 1), '\n')
+        try
+            " Vim 7.4.279 and later
+            let p = globpath(here, a:what, 1, 1)
+        catch /\m^Vim\%((\a\+)\)\=:E118/
+            let p = split(globpath(here, a:what, 1), "\n")
+        endtry
 
         if !empty(p)
             return fnamemodify(p[0], ':p')
@@ -327,6 +340,12 @@ endfunction " }}}2
 " (hopefully high resolution) time since program start
 function! syntastic#util#stamp() abort " {{{2
     return split( split(reltimestr(reltime(g:_SYNTASTIC_START)))[0], '\.' )
+endfunction " }}}2
+
+function! syntastic#util#setChangedtick() abort " {{{2
+    unlockvar! b:syntastic_changedtick
+    let b:syntastic_changedtick = b:changedtick
+    lockvar! b:syntastic_changedtick
 endfunction " }}}2
 
 let s:_wid_base = 'syntastic_' . getpid() . '_' . reltimestr(g:_SYNTASTIC_START) . '_'
@@ -499,7 +518,13 @@ function! s:_rmrf(what) abort " {{{2
             return
         endif
 
-        for f in split(globpath(a:what, '*', 1), "\n")
+        try
+            " Vim 7.4.279 and later
+            let entries = globpath(a:what, '*', 1, 1)
+        catch /\m^Vim\%((\a\+)\)\=:E118/
+            let entries = split(globpath(a:what, '*', 1), "\n")
+        endtry
+        for f in entries
             call s:_rmrf(f)
         endfor
         silent! call syntastic#util#system(s:rmdir . ' ' . syntastic#util#shescape(a:what))
