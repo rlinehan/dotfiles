@@ -19,6 +19,10 @@ set autoindent  " set auto-indenting on
 "set ruler   " show the cursor position
 set nowrap  " don't warp display
 
+" Add columns at 80 and 120 characters to warn about line length
+let &colorcolumn=join(range(81,999),",")
+let &colorcolumn="80,".join(range(120,999),",")
+
 set laststatus=2
 " Format the statusline
 "set statusline=[%n]\ %<%.99f%m%r%h\ %w\ \ %{CurDir()}%h\%=%-16(\ %l/%L,\ %c%V\ %{GitBranch()}\ %)
