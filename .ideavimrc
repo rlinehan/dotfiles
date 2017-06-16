@@ -1,0 +1,13 @@
+
+source ~/.vimrc
+
+
+
+set visualbell
+set noerrorbells
+set showmode
+set hlsearch
+"set hls
+
+
+
