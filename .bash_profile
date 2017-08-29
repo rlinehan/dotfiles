@@ -8,8 +8,8 @@ fi
 # Configure rbenv if it exists
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
-#export CC=gcc-4.2
-export CC=gcc
+export CC=gcc-4.2
+#export CC=gcc
 
 export EDITOR=vim
 
