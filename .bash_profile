@@ -8,7 +8,8 @@ fi
 # Configure rbenv if it exists
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
-export CC=gcc-4.2
+#export CC=gcc-4.2
+export CC=gcc
 
 export EDITOR=vim
 
@@ -81,6 +82,7 @@ if [ -f ~/.bashrc ]; then
   . ~/.bashrc
 fi
 
+source ~/.lein-completion.bash
 source ~/.git-completion.bash
 source ~/.git-prompt.sh
 export PATH

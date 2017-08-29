@@ -17,7 +17,23 @@
   vimadd = "! f() { git subtree add --prefix .vim/bundle/$2 https://github.com/$1/$2.git master --squash;}; f"
   vimupdate = "! f() { git subtree pull --prefix .vim/bundle/$2 https://github.com/$1/$2.git master --squash;}; f"
   changelog = "log --pretty=format:'%ad - %aN <%aE>%n * %s (%h)%n' --date=short --date-order --no-merges --patience -M -C -C -c"
+
+  # Usage: $ git pr <remote> <pull request number> <pull request branch description>
+  #
+  # Example: $ git pr foo 37 pr-i-want-to-test
+  #
+  # Pulls down PR #37 from remote foo (assuming foo is a github repository) to
+  # branch PR-37-pr-i-want-to-test and checks this branch out.
   pr = "! f() { git fetch $1 pull/$2/head:PR-$2-$3 && git checkout PR-$2-$3;}; f"
+
+  # Usage: $ git prupdate <remote> <pull request number>
+  #
+  # Example: $ git prupdate foo 37
+  #
+  # Fetches pull request 37 from remote foo and merges to current branch
+  # (usually a PR created with the `pr` alias above. Only works if PR has not
+  # been force-pushed to.
+  prupdate = "! f() { git fetch $1 pull/$2/head && git merge FETCH_HEAD;}; f"
 
 # given a remote and a branch, fetch the remote, merge the branch locally, and
 # push to Github
