@@ -26,6 +26,7 @@ if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
   c_host='\[\033[36m\]'
   c_git_branch='\[\033[5;34m\]'
   c_path='\[\033[35m\]'
+  c_venv='\[\033[95m\]'
 else
   c_reset=
   c_user_root=
@@ -75,7 +76,23 @@ ps1_identity()
   echo "$user_color\u${c_reset}"
 }
 
-PROMPT_COMMAND='PS1="$(ps1_identity)@${c_host}\h${c_reset}:${c_path}\w${c_reset}${c_git_branch}$(ps1_git)${c_reset}\n\$ "'
+# from https://stackoverflow.com/a/20026992
+ps1_virtualenv()
+{
+  # Get Virtual Env
+  if [[ -n "$VIRTUAL_ENV" ]]; then
+    # Strip out the path and just leave the env name
+    venv="${VIRTUAL_ENV##*/}"
+  else
+    # In case you don't have one activated
+    venv=''
+  fi
+  [[ -n "$venv" ]] && echo " (venv:$venv) "
+}
+
+# disable the default virtualenv prompt change
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+PROMPT_COMMAND='PS1="$(ps1_identity)@${c_host}\h${c_reset}:${c_path}\w${c_reset}${c_git_branch}$(ps1_git)${c_reset}${c_venv}$(ps1_virtualenv)${c_reset}\n\$ "'
 
 
 if [ -f ~/.bashrc ]; then
