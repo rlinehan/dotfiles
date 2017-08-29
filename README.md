@@ -43,4 +43,5 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 * [jratner/vim-flavored-markdown](https://github.com/jtratner/vim-flavored-markdown)
 * [jpalardy/vim-slime](https://github.com/jpalardy/vim-slime)
 * [itspriddle/vim-marked](https://github.com/itspriddle/vim-marked)
+* [vim-latex/vim-latex](https://github.com/vim-latex/vim-latex)
 * bufexplorer
