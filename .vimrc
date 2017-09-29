@@ -80,6 +80,8 @@ let g:airline_symbols.readonly = '⭤'
 let g:airline_symbols.linenr = '⭡'
 let g:airline_inactive_collapse=1
 
+" CLOJURE
+
 "  Parentheses colours using Solarized
 let g:rbpt_colorpairs = [
   \ [ '13', '#6c71c4'],
@@ -118,9 +120,31 @@ let g:clojure_special_indent_words = 'deftype,defrecord,reify,proxy,extend-type,
 
 let g:slime_target = "tmux"
 
+" RUBY
 let ruby_space_errors=1   " highlight tab/space mixing in ruby files
+
+" actually this isn't ruby specific
 highlight RedundantSpaces ctermbg=red
 match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
+
+" PYTHON
+" conform to PEP08 standards (from https://realpython.com/blog/python/vim-and-python-a-match-made-in-heaven )
+au BufNewFile,BufRead *.py
+ \ set tabstop=4 |
+ \ set softtabstop=4 |
+ \ set shiftwidth=4 |
+ \ set fileformat=unix
+" don't include since already set
+    "\ set textwidth=79
+    "\ set expandtab
+    "\ set autoindent
+    "
+    "
+
+" JSON
+autocmd BufNewFile,BufRead *.json set ft=javascript
+
+" MISC
 
 set number  " line numbers
 set scrolloff=5
