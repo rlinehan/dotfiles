@@ -1,6 +1,12 @@
 [user]
   name = Ruth Linehan
-  email = ruth.linehan@gmail.com
+  email = rlinehan@github.com
+[github]
+  user = rlinehan
+#[push]
+#  default = simple
+[credential]
+  helper = osxkeychain
 [merge]
   conflictstyle = diff3
 [color]
