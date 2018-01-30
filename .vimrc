@@ -161,6 +161,9 @@ let g:ctrlp_custom_ignore = {
   \}
 
 map <C-n> :NERDTreeToggle<CR>
+nnoremap <silent> <Leader>n :NERDTreeFind<CR>
+" close vim if nerdtree is the only window left open
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 set pastetoggle=<F2>
 
