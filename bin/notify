@@ -4,4 +4,5 @@ function notify {
   osascript -e "display notification \"$msg\" with title \"$title\" sound name \"default\""
 }
 
-$@ && notify
+$@
+notify
