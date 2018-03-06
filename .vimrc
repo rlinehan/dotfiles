@@ -163,6 +163,10 @@ let g:ctrlp_custom_ignore = {
   \ 'dir': 'bower_components$\|node_modules$',
   \}
 
+" mappings for finding files with fzf.vim
+map <Leader>f :Files<CR>
+map <Leader>g :GFiles<CR>
+
 map <C-n> :NERDTreeToggle<CR>
 nnoremap <silent> <Leader>n :NERDTreeFind<CR>
 " close vim if nerdtree is the only window left open
