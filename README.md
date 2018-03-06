@@ -45,3 +45,4 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 * [itspriddle/vim-marked](https://github.com/itspriddle/vim-marked)
 * [vim-latex/vim-latex](https://github.com/vim-latex/vim-latex)
 * bufexplorer
+* [junegunn/fzf.vim](https://github.com/junegunn/fzf.vim)
