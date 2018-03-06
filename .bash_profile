@@ -90,10 +90,20 @@ ps1_virtualenv()
   [[ -n "$venv" ]] && echo " (venv:$venv) "
 }
 
+# from https://coderwall.com/p/ba8afa/git-branch-fuzzy-search-checkout
+gco() {
+#  git fetch
+  local branches branch
+  branches=$(git branch -a) &&
+  branch=$(echo "$branches" | fzf +s +m -e) &&
+  git checkout $(echo "$branch" | sed "s:.* remotes/origin/::" | sed "s:.* ::")
+}
+
 # disable the default virtualenv prompt change
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 PROMPT_COMMAND='PS1="$(ps1_identity)@${c_host}\h${c_reset}:${c_path}\w${c_reset}${c_git_branch}$(ps1_git)${c_reset}${c_venv}$(ps1_virtualenv)${c_reset}\n\$ "'
 
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 if [ -f ~/.bashrc ]; then
   . ~/.bashrc
