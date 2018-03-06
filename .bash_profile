@@ -109,6 +109,8 @@ if [ -f ~/.bashrc ]; then
   . ~/.bashrc
 fi
 
+source ~/.bash_aliases
+
 source ~/.lein-completion.bash
 source ~/.git-completion.bash
 source ~/.git-prompt.sh
