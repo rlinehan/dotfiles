@@ -46,3 +46,4 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 * [vim-latex/vim-latex](https://github.com/vim-latex/vim-latex)
 * bufexplorer
 * [junegunn/fzf.vim](https://github.com/junegunn/fzf.vim)
+* [tpope/vim-rhubarb](https://github.com/tpope/vim-rhubarb)
