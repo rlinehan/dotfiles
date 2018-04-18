@@ -17,6 +17,7 @@
   lg = "log --pretty=format:'%C(yellow)%h%C(reset) %s %C(cyan)%ar%C(reset) %C(blue)%an%C(reset) %C(green)%d%C(reset)' --graph --date-order"
   # shorten for performance
   lgs = "log --pretty=format:'%C(yellow)%h%C(reset) %s %C(cyan)%ar%C(reset) %C(blue)%an%C(reset) %C(green)%d%C(reset)' --graph --date-order --since='1 month ago'"
+
   co = "checkout --no-guess"
   # checkout interactive, with branch preview, create new local branch for
   # remote branches (strip `remote/origin`)
@@ -28,10 +29,13 @@
 
   st = "status"
   rt = "remote"
+
   ra = "! f() { git remote add $1 git@github.com:$1/$(basename $(git remote show -n origin | grep Fetch | cut -d: -f2-)); git remote -v;}; f"
   cl = "! f() { git clone git@github.com:rlinehan/$1.git ;}; f"
+
   vimadd = "! f() { git subtree add --prefix .vim/bundle/$2 https://github.com/$1/$2.git master --squash;}; f"
   vimupdate = "! f() { git subtree pull --prefix .vim/bundle/$2 https://github.com/$1/$2.git master --squash;}; f"
+
   changelog = "log --pretty=format:'%ad - %aN <%aE>%n * %s (%h)%n' --date=short --date-order --no-merges --patience -M -C -C -c"
 
   # Usage: $ git pr <remote> <pull request number> <pull request branch description>
@@ -51,9 +55,15 @@
   # been force-pushed to.
   prupdate = "! f() { git fetch $1 pull/$2/head && git merge FETCH_HEAD;}; f"
 
-# given a remote and a branch, fetch the remote, merge the branch locally, and
-# push to Github
+  # given a remote and a branch, fetch the remote, merge the branch locally,
+  # and push to Github - for use in a distributed workflow (users fork the
+  # repo and push to their own branches)
   update = "! f() { git checkout $2 && git fetch $1 && git merge $1/$2 --ff-only && git push origin HEAD;}; f"
+
+  # checkout a branch and do a pull to update it (for use in a centralized
+  # GitHub workflow)
+  evolve = "! f() { git checkout $1 && git pull;}; f"
+
 [rerere]
   enabled = 1
 [core]
