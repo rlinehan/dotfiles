@@ -182,6 +182,8 @@ augroup markdown
           \setlocal wrap linebreak nolist  " softwrap in markdown files
 augroup END
 
+command! SoftWrap set wrap linebreak nolist
+
 let g:Tex_DefaultTargetFormat='pdf'
 "autocmd FileType tex call Tex_SetTeXCompilerTarget('View','pdf')
 
