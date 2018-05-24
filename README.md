@@ -35,6 +35,7 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 * [jtmkrueger/vim-c-cr](https://github.com/jtmkrueger/vim-c-cr)
 * [bling/vim-bufferline](https://github.com/bling/vim-bufferline)
 * [bling/vim-airline](https://github.com/bling/vim-airline)
+* [vim-airline/vim-airline-themes](https://github.com/vim-airline/vim-airline-themes)
 * [guns/vim-clojure-static](https://github.com/guns/vim-clojure-static)
 * [kien/rainbow_parentheses.vim](https://github.com/kien/rainbow_parentheses.vim)
 * [tpope/vim-fireplace](https://github.com/tpope/vim-fireplace)
