@@ -184,6 +184,10 @@ augroup END
 
 command! SoftWrap set wrap linebreak nolist
 
+" Remap j and k to act as expected when used on long, wrapped, lines
+nnoremap j gj
+nnoremap k gk
+
 let g:Tex_DefaultTargetFormat='pdf'
 "autocmd FileType tex call Tex_SetTeXCompilerTarget('View','pdf')
 
