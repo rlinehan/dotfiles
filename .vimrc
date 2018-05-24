@@ -35,6 +35,12 @@ set showcmd   " show (partial) command in status line
 set wildmenu
 "set wildmode=list:longest,full
 
+" define Browse command to work around fugitive Gbrowse issue
+" see
+" https://github.com/tpope/vim-fugitive/commit/32957cb55235e82ac42147f073326db273b89b0f
+" and https://github.com/tpope/vim-fugitive/issues/530#issuecomment-50277936
+command! -bar -nargs=1 Browse silent! exe '!open' shellescape(<q-args>, 1) | redraw!
+
 " Searching
 set incsearch   " incremental search
 set infercase   " handle case in a smart way in autocompletes

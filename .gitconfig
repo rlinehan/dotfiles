@@ -71,7 +71,5 @@
   excludesfile = ~/.git-ignore
   autocrlf = input
   safecrlf = true
-[web]
-  browser = open
 [push]
   default = current
