@@ -196,25 +196,3 @@ let g:Tex_TreatMacViewerAsUNIX = 1
 let g:Tex_ExecuteUNIXViewerInForeground = 1
 let g:Tex_ViewRule_ps = 'open -a Preview'
 let g:Tex_ViewRule_pdf = 'open -a Preview'
-
-"autocmd BufNewFile,BufReadPost *.md set filetype=markdown
-
-" Git branch
-"function! GitBranch()
-"  let branch = system("git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* //'")
-"  if branch != ''
-"   return '   git: ' . substitute(branch, '\n', '', 'g')
-"  en
-"  return ''
-"endfunction
-"
-"function! CurDir()
-"  return substitute(getcwd(), '/Users/ruth/', "~/", "g")
-"endfunction
-
-"function! HasPaste()
-"  if &paste
-"    return 'PASTE MODE  '
-"  en
-"  return ''
-"endfunction
