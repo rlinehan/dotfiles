@@ -61,15 +61,34 @@ set background=dark
 colorscheme solarized
 highlight clear SignColumn
 
-let g:bufferline_fname_mod = ':~:.'
-let g:bufferline_echo = 0
-let g:bufferline_rotate = 1
-let g:bufferline_fixed_index =  0 "always first
+" Airline
+
+" disable Bufferline and instead just display buffer number and file name
+let g:airline#extensions#bufferline#enabled = 0
+let g:airline_section_c = '%n: %f'
+"let g:bufferline_fname_mod = ':~:.'
+"let g:bufferline_echo = 0
+"let g:bufferline_rotate = 1
+"let g:bufferline_fixed_index = -1 "always last - so it is visible
+"let g:bufferline_pathshorten = 0
 
 let g:airline_powerline_fonts = 1
 let g:airline_detect_modified = 0
-"let g:airline_theme = 'solarized'
 let g:airline_theme = 'luna'
+" make inactive statusline stand out a bit more
+let g:airline_base16_improved_contrast = 1
+
+" truncate branch names in Airline
+let g:airline#extensions#branch#format = 2
+let g:airline#extensions#branch#displayed_head_limit = 20
+
+" only display file encoding if it is not `utf-8[unix]`
+let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
+" don't include section `x` - filetype
+let g:airline#extensions#default#layout = [
+      \ [ 'a', 'b', 'c' ],
+      \ [ 'y', 'z', 'error', 'warning' ]
+      \ ]
 
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
@@ -81,6 +100,8 @@ let g:airline_right_alt_sep = '⮃'
 let g:airline_symbols.branch = '⭠'
 let g:airline_symbols.readonly = '⭤'
 let g:airline_symbols.linenr = '⭡'
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.whitespace = '✹'
 let g:airline_inactive_collapse=1
 
 " CLOJURE
