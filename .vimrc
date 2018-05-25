@@ -205,8 +205,7 @@ let g:vim_markdown_folding_disabled=1
 
 augroup markdown
     au!
-    au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
-          \setlocal wrap linebreak nolist  " softwrap in markdown files
+    au BufNewFile,BufRead *.md,*.markdown setlocal wrap linebreak nolist  " softwrap in markdown files
 augroup END
 
 command! SoftWrap set wrap linebreak nolist
