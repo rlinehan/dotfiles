@@ -93,11 +93,6 @@ let g:airline#extensions#branch#displayed_head_limit = 20
 
 " only display file encoding if it is not `utf-8[unix]`
 let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
-" don't include section `x` - filetype
-let g:airline#extensions#default#layout = [
-      \ [ 'a', 'b', 'c' ],
-      \ [ 'y', 'z', 'error', 'warning' ]
-      \ ]
 
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
