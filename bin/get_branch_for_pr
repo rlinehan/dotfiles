@@ -9,7 +9,7 @@ eof
 function get_branch {
   curl -H 'Content-Type: application/json' \
   -H "Authorization: Bearer $GITHUB_PRODUCTION_TOKEN" \
-  -X POST https://api.github.com/graphql \
+  -X POST -s https://api.github.com/graphql \
   -d "$(generate_query)" | jq '.data.repository.pullRequest.headRef.name' | cut -d \" -f 2
 }
 
