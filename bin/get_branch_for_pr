@@ -1,0 +1,20 @@
+function generate_query {
+  cat <<eof
+{
+   "query": "query {repository (owner: \"$repo_owner\", name: \"$repo_name\") { pullRequest (number:$pull_number) { headRef{ name } } }}"
+ }
+eof
+}
+
+function get_branch {
+  curl -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer $GITHUB_PRODUCTION_TOKEN" \
+  -X POST https://api.github.com/graphql \
+  -d "$(generate_query)" | jq '.data.repository.pullRequest.headRef.name' | cut -d \" -f 2
+}
+
+pull_number=$1
+repo_name=`git remote get-url origin | cut -d/ -f5`
+repo_owner=`git remote get-url origin | cut -d/ -f4`
+
+get_branch
