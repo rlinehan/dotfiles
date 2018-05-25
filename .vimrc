@@ -39,7 +39,10 @@ set wildmenu
 " see
 " https://github.com/tpope/vim-fugitive/commit/32957cb55235e82ac42147f073326db273b89b0f
 " and https://github.com/tpope/vim-fugitive/issues/530#issuecomment-50277936
-command! -bar -nargs=1 Browse silent! exe '!open' shellescape(<q-args>, 1) | redraw!
+"command! -bar -nargs=1 Browse silent! exe '!open' shellescape(<q-args>, 1) | redraw!
+" OR this might be a better fix - see
+" https://github.com/aroben/dotfiles/commit/648cfddf16fc4a612a1c6efd59525e6946048e50
+let g:netrw_browsex_viewer = "open"
 
 " Searching
 set incsearch   " incremental search
