@@ -14,7 +14,7 @@ function get_branch {
 }
 
 pull_number=$1
-repo_name=`git remote get-url origin | cut -d/ -f5`
+repo_name=`git remote get-url origin | cut -d/ -f5 | cut -d. -f1`
 repo_owner=`git remote get-url origin | cut -d/ -f4`
 
 get_branch
