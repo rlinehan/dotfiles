@@ -17,6 +17,8 @@
   lg = "log --pretty=format:'%C(yellow)%h%C(reset) %s %C(cyan)%ar%C(reset) %C(blue)%an%C(reset) %C(green)%d%C(reset)' --graph --date-order"
   # shorten for performance
   lgs = "log --pretty=format:'%C(yellow)%h%C(reset) %s %C(cyan)%ar%C(reset) %C(blue)%an%C(reset) %C(green)%d%C(reset)' --graph --date-order --since='1 month ago'"
+  # just show this branch
+  lgb= "log --pretty=format:'%C(yellow)%h%C(reset) %s %C(cyan)%ar%C(reset) %C(blue)%an%C(reset) %C(green)%d%C(reset)' --graph --date-order master..."
 
   co = "checkout --no-guess"
   # checkout interactive, with branch preview, create new local branch for
@@ -29,6 +31,11 @@
   # push a sha to origin on the currently named branch (creating it if
   # necessary)
   psha = "! f() { git push origin $1:refs/heads/`git rev-parse --abbrev-ref HEAD` ;}; f"
+  # force push to reset current branch to provided SHA
+  pshaf = "! f() { git push -f origin $1:refs/heads/`git rev-parse --abbrev-ref HEAD` ;}; f"
+
+  # pull with a rebase
+  repull = "! f() { git pull --rebase origin `git rev-parse --abbrev-ref HEAD` ;}; f"
 
   st = "status"
   rt = "remote"
