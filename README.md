@@ -23,7 +23,6 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 
 # Current vim plugins installed
 * [mileszs/ack.vim](https://github.com/mileszs/ack.vim)
-* [kien/ctrlp.vim](https://github.com/kien/ctrlp.vim)
 * [scrooloose/nerdtree](https://github.com/scrooloose/nerdtree)
 * [scrooloose/syntastic](https://github.com/scrooloose/syntastic)
 * [altercation/vim-colors-solarized](https://github.com/altercation/vim-colors-solarized)
@@ -47,3 +46,4 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 * bufexplorer
 * [junegunn/fzf.vim](https://github.com/junegunn/fzf.vim)
 * [tpope/vim-rhubarb](https://github.com/tpope/vim-rhubarb)
+* [jremmen/vim-ripgrep](https://github.com/jremmen/vim-ripgrep)
