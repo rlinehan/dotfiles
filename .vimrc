@@ -182,11 +182,8 @@ set hidden
 set nobackup
 set noswapfile
 
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
-let g:ctrlp_custom_ignore = {
-  \ 'dir': 'bower_components$\|node_modules$',
-  \}
+" Map CtrlP to FZF
+nnoremap <C-p> :FZF<CR>
 
 " mappings for finding files with fzf.vim
 map <Leader>f :Files<CR>
