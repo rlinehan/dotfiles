@@ -8,6 +8,9 @@ fi
 # Configure rbenv if it exists
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
+# Configure jenv if it exists
+if which jenv > /dev/null; then eval "$(jenv init -)"; fi
+
 export CC=gcc-4.2
 #export CC=gcc
 
