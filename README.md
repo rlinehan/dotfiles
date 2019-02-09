@@ -43,7 +43,7 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 * [jpalardy/vim-slime](https://github.com/jpalardy/vim-slime)
 * [itspriddle/vim-marked](https://github.com/itspriddle/vim-marked)
 * [vim-latex/vim-latex](https://github.com/vim-latex/vim-latex)
-* bufexplorer
+* [jlanzarotta/bufexplorer](https://github.com/jlanzarotta/bufexplorer)
 * [junegunn/fzf.vim](https://github.com/junegunn/fzf.vim)
 * [tpope/vim-rhubarb](https://github.com/tpope/vim-rhubarb)
 * [jremmen/vim-ripgrep](https://github.com/jremmen/vim-ripgrep)
