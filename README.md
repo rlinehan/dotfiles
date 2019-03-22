@@ -23,7 +23,7 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 
 # Current vim plugins installed
 * [scrooloose/nerdtree](https://github.com/scrooloose/nerdtree)
-* [scrooloose/syntastic](https://github.com/scrooloose/syntastic)
+* [vim-syntastic/syntastic](https://github.com/vim-syntastic/syntastic)
 * [altercation/vim-colors-solarized](https://github.com/altercation/vim-colors-solarized)
 * [tpope/vim-fugitive](https://github.com/tpope/vim-fugitive)
 * [airblade/vim-gitgutter](https://github.com/airblade/vim-gitgutter)
