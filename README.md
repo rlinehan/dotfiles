@@ -22,7 +22,6 @@ The gitconfig now includes aliases for adding and updating vim plugins:
    `git vimupdate <author> <plugin name>` to update
 
 # Current vim plugins installed
-* [mileszs/ack.vim](https://github.com/mileszs/ack.vim)
 * [scrooloose/nerdtree](https://github.com/scrooloose/nerdtree)
 * [scrooloose/syntastic](https://github.com/scrooloose/syntastic)
 * [altercation/vim-colors-solarized](https://github.com/altercation/vim-colors-solarized)
