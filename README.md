@@ -29,7 +29,6 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 * [airblade/vim-gitgutter](https://github.com/airblade/vim-gitgutter)
 * [godlygeek/tabular](https://github.com/godlygeek/tabular)
 * [tpope/vim-endwise](https://github.com/tpope/vim-endwise)
-* [rodjek/vim-puppet](https://github.com/rodjek/vim-puppet)
 * [jtmkrueger/vim-c-cr](https://github.com/jtmkrueger/vim-c-cr)
 * [bling/vim-bufferline](https://github.com/bling/vim-bufferline)
 * [bling/vim-airline](https://github.com/bling/vim-airline)
