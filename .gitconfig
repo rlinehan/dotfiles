@@ -1,6 +1,8 @@
 [user]
   name = Ruth Linehan
-  email = rlinehan@github.com
+  email = ruth.linehan@gmail.com
+[includeIf "gitdir:~/github/"]
+  path = .gitconfig-github
 [github]
   user = rlinehan
 #[push]
