@@ -18,7 +18,7 @@
   # shorten for performance
   lgs = "log --pretty=format:'%C(yellow)%h%C(reset) %s %C(cyan)%ar%C(reset) %C(blue)%an%C(reset) %C(green)%d%C(reset)' --graph --date-order --since='1 month ago'"
   # just show this branch
-  lgb= "log --pretty=format:'%C(yellow)%h%C(reset) %s %C(cyan)%ar%C(reset) %C(blue)%an%C(reset) %C(green)%d%C(reset)' --graph --date-order master..."
+  lgb= "log --pretty=format:'%C(yellow)%h%C(reset) %s %C(cyan)%ar%C(reset) %C(blue)%an%C(reset) %C(green)%d%C(reset)' --graph --date-order master.."
 
   co = "checkout --no-guess"
   # checkout interactive, with branch preview, create new local branch for
