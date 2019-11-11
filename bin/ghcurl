@@ -1,0 +1,7 @@
+args=${@:1:$(($#-1))}
+endpoint=${@:$#}
+
+curl -H 'Content-Type: application/json' \
+       -H "Authorization: Bearer $GITHUB_PRODUCTION_TOKEN" \
+        $args \
+       -s https://api.github.com$endpoint
