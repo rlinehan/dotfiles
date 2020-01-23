@@ -45,3 +45,4 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 * [junegunn/fzf.vim](https://github.com/junegunn/fzf.vim)
 * [tpope/vim-rhubarb](https://github.com/tpope/vim-rhubarb)
 * [jremmen/vim-ripgrep](https://github.com/jremmen/vim-ripgrep)
+* [fatih/vim-go](https://github.com/fatih/vim-go)
