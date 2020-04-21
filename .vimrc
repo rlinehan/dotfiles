@@ -151,9 +151,26 @@ let g:slime_target = "tmux"
 " RUBY
 let ruby_space_errors=1   " highlight tab/space mixing in ruby files
 
+" don't do this for go though :/
 " actually this isn't ruby specific
-highlight RedundantSpaces ctermbg=red
-match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
+if (! &filetype =='go')
+  highlight RedundantSpaces ctermbg=red
+  match RedundantSpaces /\s\+$\| \+\ze\t\|\t/
+endif
+
+" GO
+" from https://github.com/fatih/vim-go-tutorial
+" shortcut for running :GoTest
+autocmd FileType go nmap <leader>t  <Plug>(go-test)
+" shortcut for running :GoBuild
+autocmd FileType go nmap <leader>b  <Plug>(go-build)
+" additional highlighting for Go - can cause performance issues
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_operators = 1
+let g:go_fmt_command = "goimports"
 
 " PYTHON
 " conform to PEP08 standards (from https://realpython.com/blog/python/vim-and-python-a-match-made-in-heaven )
