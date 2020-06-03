@@ -1,0 +1,9 @@
+# clean up git branches that have been merged
+
+branches=`git branch | cut -c 3-`
+
+for i in $branches
+do
+  git branch -d $i
+done
+
