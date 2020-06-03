@@ -19,6 +19,8 @@ if which go > /dev/null; then PATH=$PATH:$HOME/go/bin; fi
 
 export EDITOR=vim
 
+stty quit undef
+
 # source:
 # http://vvv.tobiassjosten.net/bash/dynamic-prompt-with-git-and-ansi-colors/
 # and RVM contrib ps1_functions
