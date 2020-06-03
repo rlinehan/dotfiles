@@ -61,6 +61,7 @@ set listchars=eol:$,tab:>-,trail:-,extends:>,precedes:<
 filetype plugin on    " enable filetype detection
 filetype indent on    " enable language-depenent indentation
 
+" TODO is this actually used?
 runtime macros/matchit.vim
 
 syntax enable
