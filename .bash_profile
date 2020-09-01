@@ -124,3 +124,4 @@ source ~/.git-completion.bash
 source ~/.git-prompt.sh
 export PATH
 
+export PATH="/usr/local/opt/mysql@5.7/bin:$PATH"
