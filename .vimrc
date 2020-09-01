@@ -165,6 +165,7 @@ endif
 autocmd FileType go nmap <leader>t  <Plug>(go-test)
 " shortcut for running :GoBuild
 autocmd FileType go nmap <leader>b  <Plug>(go-build)
+" Note to self: :GoDef is C-], go back is C-o
 " additional highlighting for Go - can cause performance issues
 let g:go_highlight_types = 1
 let g:go_highlight_fields = 1
