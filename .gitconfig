@@ -85,3 +85,7 @@
   safecrlf = true
 [push]
   default = current
+[pull]
+	ff = only
+[fetch]
+	prune = true
