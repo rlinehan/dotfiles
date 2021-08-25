@@ -165,11 +165,11 @@ syn match       goSingleDecl        /\%(import\|var\|const\) [^(]\@=/ contains=g
 syn match       goDecimalInt        "\<-\=\(0\|[1-9]_\?\(\d\|\d\+_\?\d\+\)*\)\%([Ee][-+]\=\d\+\)\=\>"
 syn match       goDecimalError      "\<-\=\(_\(\d\+_*\)\+\|\([1-9]\d*_*\)\+__\(\d\+_*\)\+\|\([1-9]\d*_*\)\+_\+\)\%([Ee][-+]\=\d\+\)\=\>"
 syn match       goHexadecimalInt    "\<-\=0[xX]_\?\(\x\+_\?\)\+\>"
-syn match       goHexadecimalError  "\<-\=0[xX]_\?\(\x\+_\?\)*\(\([^ \t0-9A-Fa-f_]\|__\)\S*\|_\)\>"
+syn match       goHexadecimalError  "\<-\=0[xX]_\?\(\x\+_\?\)*\(\([^ \t0-9A-Fa-f_)]\|__\)\S*\|_\)\>"
 syn match       goOctalInt          "\<-\=0[oO]\?_\?\(\o\+_\?\)\+\>"
-syn match       goOctalError        "\<-\=0[0-7oO_]*\(\([^ \t0-7oOxX_/)\]\}\:]\|[oO]\{2,\}\|__\)\S*\|_\|[oOxX]\)\>"
+syn match       goOctalError        "\<-\=0[0-7oO_]*\(\([^ \t0-7oOxX_/)\]\}\:;]\|[oO]\{2,\}\|__\)\S*\|_\|[oOxX]\)\>"
 syn match       goBinaryInt         "\<-\=0[bB]_\?\([01]\+_\?\)\+\>"
-syn match       goBinaryError       "\<-\=0[bB]_\?[01_]*\([^ \t01_]\S*\|__\S*\|_\)\>"
+syn match       goBinaryError       "\<-\=0[bB]_\?[01_]*\([^ \t01_)]\S*\|__\S*\|_\)\>"
 
 hi def link     goDecimalInt        Integer
 hi def link     goDecimalError      Error
@@ -399,7 +399,7 @@ function! s:hi()
   " filetype plugin on, the highlight groups won't be defined when
   " ftplugin/go.vim is executed when the first go file is opened.
   " See https://github.com/fatih/vim-go/issues/2658.
-  if exists('*prop_type_add')
+  if has('textprop')
     if empty(prop_type_get('goSameId'))
       call prop_type_add('goSameId', {'highlight': 'goSameId'})
     endif
@@ -422,8 +422,8 @@ function! s:hi()
 
   " :GoDebug commands
   if go#config#HighlightDebug()
-    hi GoDebugBreakpoint term=standout ctermbg=117 ctermfg=0 guibg=#BAD4F5  guifg=Black
-    hi GoDebugCurrent term=reverse  ctermbg=12  ctermfg=7 guibg=DarkBlue guifg=White
+    hi def GoDebugBreakpoint term=standout ctermbg=117 ctermfg=0 guibg=#BAD4F5  guifg=Black
+    hi def GoDebugCurrent term=reverse  ctermbg=12  ctermfg=7 guibg=DarkBlue guifg=White
   endif
 endfunction
 
