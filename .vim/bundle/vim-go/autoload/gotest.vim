@@ -2,30 +2,31 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-" Write a Go file to a temporary directory and append this directory to $GOPATH.
+" Write a Go file to a temporary directory and append this directory to
+" $GOPATH.
 "
-" The file will written to a:path, which is relative to the temporary directory,
-" and this file will be loaded as the current buffer.
+" The file will written to a:path, which is relative to the temporary
+" directory, and this file will be loaded as the current buffer.
+"
+" A Go module will be configured in the first segment of a:path within the
+" temporary directory. The module's name will be prefixed with vim-go.test/
+" followed by the first segment in a:path.
+"
+" The current directory will be changed to the parent directory of module
+" root.
 "
 " The cursor will be placed on the character before any 0x1f byte.
 "
 " The full path to the created directory is returned, it is the caller's
 " responsibility to clean that up!
 fun! gotest#write_file(path, contents) abort
-  if go#util#has_job()
-    call go#lsp#CleanWorkspaces()
-  endif
   let l:dir = go#util#tempdir("vim-go-test/testrun/")
   let $GOPATH .= ':' . l:dir
   let l:full_path = l:dir . '/src/' . a:path
 
   call mkdir(fnamemodify(l:full_path, ':h'), 'p')
   call writefile(a:contents, l:full_path)
-  exe 'cd ' . l:dir . '/src'
-
-  if go#util#has_job()
-    call go#lsp#AddWorkspaceDirectory(fnamemodify(l:full_path, ':p:h'))
-  endif
+  call s:setupproject(printf('%s/src', l:dir), a:path)
 
   silent exe 'e! ' . a:path
 
@@ -55,6 +56,13 @@ endfun
 "
 " The file will be copied to a new GOPATH-compliant temporary directory and
 " loaded as the current buffer.
+"
+" A Go module will be configured in the first segment of a:path within the
+" temporary directory. The module's name will be prefixed with vim-go.test/
+" followed by the first segment in a:path.
+"
+" The current directory will be changed to the parent directory of module
+" root.
 fun! gotest#load_fixture(path) abort
   if go#util#has_job()
     call go#lsp#CleanWorkspaces()
@@ -64,8 +72,8 @@ fun! gotest#load_fixture(path) abort
   let l:full_path = l:dir . '/src/' . a:path
 
   call mkdir(fnamemodify(l:full_path, ':h'), 'p')
-  exe 'cd ' . l:dir . '/src'
-  silent exe 'noautocmd e ' . a:path
+  call s:setupproject(printf('%s/src', l:dir), a:path)
+  silent exe 'noautocmd e! ' . a:path
   silent exe printf('read %s/test-fixtures/%s', g:vim_go_root, a:path)
   silent noautocmd w!
   if go#util#has_job()
@@ -129,26 +137,56 @@ endfun
 func! gotest#assert_quickfix(got, want) abort
   call assert_equal(len(a:want), len(a:got), "number of errors")
   if len(a:want) != len(a:got)
-    call assert_equal(a:want, a:got)
-    return
+    return assert_equal(a:want, a:got)
   endif
 
+  let l:retval = 0
   let i = 0
+
   while i < len(a:want)
     let want_item = a:want[i]
     let got_item = a:got[i]
     let i += 1
 
-    call assert_equal(want_item.bufnr, got_item.bufnr, "bufnr")
-    call assert_equal(want_item.lnum, got_item.lnum, "lnum")
-    call assert_equal(want_item.col, got_item.col, "col")
-    call assert_equal(want_item.vcol, got_item.vcol, "vcol")
-    call assert_equal(want_item.nr, got_item.nr, "nr")
-    call assert_equal(want_item.pattern, got_item.pattern, "pattern")
-    call assert_equal(want_item.text, got_item.text, "text")
-    call assert_equal(want_item.type, got_item.type, "type")
-    call assert_equal(want_item.valid, got_item.valid, "valid")
+    let l:retval = assert_equal(want_item.bufnr, got_item.bufnr, "bufnr") || l:retval
+    let l:retval = assert_equal(want_item.lnum, got_item.lnum, "lnum") || l:retval
+    let l:retval = assert_equal(want_item.col, got_item.col, "col") || l:retval
+    let l:retval = assert_equal(want_item.vcol, got_item.vcol, "vcol") || l:retval
+    let l:retval = assert_equal(want_item.nr, got_item.nr, "nr") || l:retval
+    let l:retval = assert_equal(want_item.pattern, got_item.pattern, "pattern") || l:retval
+    let l:retval = assert_equal(want_item.text, got_item.text, "text") || l:retval
+    let l:retval = assert_equal(want_item.type, got_item.type, "type") || l:retval
+    let l:retval = assert_equal(want_item.valid, got_item.valid, "valid") || l:retval
   endwhile
+
+  return l:retval
+endfunc
+
+" s:setupproject sets up a Go module in dir rooted at the first segment of
+" path and changes the current directory to the parent directory of the
+" project root.
+func! s:setupproject(dir, path) abort
+  let l:projectdir = s:projectdir(a:path)
+  let l:mod = printf('vim-go.test/%s', l:projectdir)
+  let l:modroot = printf('%s/%s', a:dir, l:projectdir)
+  call s:creategomod(l:mod, l:modroot)
+  call go#util#Chdir(a:dir)
+endfunc
+
+func! s:creategomod(modname, dir) abort
+  call go#util#ExecInWorkDir(['go', 'mod', 'init', a:modname], a:dir)
+endfunc
+
+" s:project dir returns the first element of path.
+func! s:projectdir(path) abort
+  let l:path = a:path
+  let l:next = fnamemodify(l:path, ':h')
+  while l:next isnot '.'
+    let l:path = l:next
+    let l:next = fnamemodify(l:path, ':h')
+  endwhile
+
+  return l:path
 endfunc
 
 " restore Vi compatibility settings

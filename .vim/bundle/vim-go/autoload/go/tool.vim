@@ -82,9 +82,7 @@ endfunction
 
 function! go#tool#Info(showstatus) abort
   let l:mode = go#config#InfoMode()
-  if l:mode == 'gocode'
-    call go#complete#Info(a:showstatus)
-  elseif l:mode == 'guru'
+  if l:mode == 'guru'
     call go#guru#DescribeInfo(a:showstatus)
   elseif l:mode == 'gopls'
     if !go#config#GoplsEnabled()
@@ -93,7 +91,7 @@ function! go#tool#Info(showstatus) abort
     endif
     call go#lsp#Info(a:showstatus)
   else
-    call go#util#EchoError('go_info_mode value: '. l:mode .' is not valid. Valid values are: [gocode, guru, gopls]')
+    call go#util#EchoError('go_info_mode value: '. l:mode .' is not valid. Valid values are: [guru, gopls]')
   endif
 endfunction
 
@@ -136,8 +134,6 @@ function! s:balloon(msg)
   if has('balloon_eval')
     if has('balloon_multiline')
       let l:msg = join(a:msg, "\n")
-    else
-      let l:msg = substitute(join(map(deepcopy(a:msg), 'substitute(v:val, "\t", "", "")'), '; '), '{;', '{', '')
     endif
   endif
 
