@@ -1,4 +1,5 @@
 PATH=/usr/local/bin:$HOME/bin:$PATH
+export BASH_SILENCE_DEPRECATION_WARNING=1
 
 # Configure RVM if it exists
 if [ -d "$HOME/.rvm/bin"  ]; then
