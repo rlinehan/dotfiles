@@ -11,31 +11,36 @@ if !exists('g:dispatch_compilers')
 endif
 let g:dispatch_compilers['hub'] = 'git'
 
-if get(g:, 'fugitive_git_command', 'git') ==# 'git' && executable('hub')
-  let g:fugitive_git_command = 'hub'
-endif
-
-function! s:config() abort
-  let common_dir = fugitive#buffer().repo().dir('commondir')
-  if filereadable(common_dir)
-    return fugitive#buffer().repo().dir(readfile(common_dir)[0] . '/config')
+function! s:SetUpMessage(filename) abort
+  if &omnifunc !~# '^\%(syntaxcomplete#Complete\)\=$' ||
+        \ a:filename !~# '\.git[\/].*MSG$' ||
+        \ !exists('*FugitiveFind')
+    return
   endif
-  return fugitive#buffer().repo().dir('config')
+  let dir = exists('*FugitiveConfigGetRegexp') ? FugitiveGitDir() : FugitiveExtractGitDir(a:filename)
+  if empty(dir)
+    return
+  endif
+  let config_file = FugitiveFind('.git/config', dir)
+  let config = filereadable(config_file) ? readfile(config_file) : []
+  if !empty(filter(config,
+        \ '!empty(rhubarb#HomepageForUrl(matchstr(v:val, ''^\s*url\s*=\s*"\=\zs[^[:space:]"]*'')))'))
+    setlocal omnifunc=rhubarb#Complete
+  endif
 endfunction
 
 augroup rhubarb
   autocmd!
-  autocmd User Fugitive
-        \ if expand('%:p') =~# '\.git[\/].*MSG$' &&
-        \   exists('+omnifunc') &&
-        \   &omnifunc =~# '^\%(syntaxcomplete#Complete\)\=$' &&
-        \   !empty(filter(readfile(s:config()),
-        \     '!empty(rhubarb#homepage_for_url(matchstr(v:val, ''^\s*url\s*=\s*"\=\zs\S*'')))')) |
-        \   setlocal omnifunc=rhubarb#omnifunc |
-        \ endif
+  if exists('+omnifunc')
+    autocmd FileType gitcommit call s:SetUpMessage(expand('<afile>:p'))
+  endif
   autocmd BufEnter *
         \ if expand('%') ==# '' && &previewwindow && pumvisible() && getbufvar('#', '&omnifunc') ==# 'rhubarb#omnifunc' |
         \    setlocal nolist linebreak filetype=markdown |
+        \ endif
+  autocmd BufNewFile,BufRead *.git/{PULLREQ_EDIT,ISSUE_EDIT,RELEASE_EDIT}MSG
+        \ if &ft ==# '' || &ft ==# 'conf' |
+        \   set ft=gitcommit |
         \ endif
 augroup END
 
@@ -43,6 +48,6 @@ if !exists('g:fugitive_browse_handlers')
   let g:fugitive_browse_handlers = []
 endif
 
-if index(g:fugitive_browse_handlers, function('rhubarb#fugitive_url')) < 0
-  call insert(g:fugitive_browse_handlers, function('rhubarb#fugitive_url'))
+if index(g:fugitive_browse_handlers, function('rhubarb#FugitiveUrl')) < 0
+  call insert(g:fugitive_browse_handlers, function('rhubarb#FugitiveUrl'))
 endif
