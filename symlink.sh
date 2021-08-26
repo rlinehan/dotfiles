@@ -11,6 +11,12 @@ FILES=$(find -s . -maxdepth 1  ! -name "README.md" ! -name "symlink.sh" ! -name 
 # ~/.config
 CONFIG_DIR_FILES=$(find -s .config -maxdepth 1 ! -name ".config" -print0)
 
+if [ ! -d "$HOME/.config" ]
+then
+  echo "Creating .config directory"
+  mkdir "$HOME/.config"
+fi
+
 for f in $FILES $CONFIG_DIR_FILES
 do
  if [ -e "$HOME/$f" ]
