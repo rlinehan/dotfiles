@@ -46,3 +46,12 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 * [tpope/vim-rhubarb](https://github.com/tpope/vim-rhubarb)
 * [jremmen/vim-ripgrep](https://github.com/jremmen/vim-ripgrep)
 * [fatih/vim-go](https://github.com/fatih/vim-go)
+
+# Alacritty setup
+
+```
+$ git clone https://github.com/alacritty/alacritty.git
+$ cd alacritty
+$ sudo tic -xe alacritty,alacritty-direct extra/alacritty.info
+$ alacritty -v
+```
