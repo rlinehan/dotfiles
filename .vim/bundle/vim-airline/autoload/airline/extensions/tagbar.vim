@@ -1,4 +1,5 @@
-" MIT License. Copyright (c) 2013-2018 Bailey Ling et al.
+" MIT License. Copyright (c) 2013-2021 Bailey Ling et al.
+" Plugin: https://github.com/majutsushi/tagbar
 " vim: et ts=2 sts=2 sw=2
 
 scriptencoding utf-8
@@ -42,7 +43,7 @@ function! airline#extensions#tagbar#currenttag()
     endif
     " function tagbar#currenttag does not exist, if filetype is not enabled
     if s:airline_tagbar_last_lookup_time != localtime() && exists("*tagbar#currenttag")
-      let s:airline_tagbar_last_lookup_val = tagbar#currenttag('%s', '', s:flags)
+      let s:airline_tagbar_last_lookup_val = tagbar#currenttag('%s', '', s:flags, get(g:, 'airline#extensions#tagbar#searchmethod', 'nearest-stl'))
       let s:airline_tagbar_last_lookup_time = localtime()
     endif
     return s:airline_tagbar_last_lookup_val
