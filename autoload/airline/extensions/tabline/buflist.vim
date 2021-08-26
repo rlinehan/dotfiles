@@ -1,4 +1,4 @@
-" MIT License. Copyright (c) 2013-2018 Bailey Ling et al.
+" MIT License. Copyright (c) 2013-2021 Bailey Ling et al.
 " vim: et ts=2 sts=2 sw=2
 
 scriptencoding utf-8
@@ -7,9 +7,22 @@ function! airline#extensions#tabline#buflist#invalidate()
   unlet! s:current_buffer_list
 endfunction
 
+function! airline#extensions#tabline#buflist#clean()
+  if !exists('#airline')
+    " airline disabled
+    return
+  endif
+  call airline#extensions#tabline#buflist#invalidate()
+  call airline#extensions#tabline#buffers#invalidate()
+endfunction
+
 " paths in excludes list
 function! s:ExcludePaths(nr, exclude_paths)
-  let bpath = fnamemodify(bufname(a:nr), ":p")
+  let bname = bufname(a:nr)
+  if empty(bname)
+    return 0
+  endif
+  let bpath = fnamemodify(bname, ":p")
   for f in a:exclude_paths
     if bpath =~# f | return 1 | endif
   endfor
@@ -47,14 +60,18 @@ function! airline#extensions#tabline#buflist#list()
       " 4) when excluding preview windows:
       "     'bufhidden' == wipe
       "     'buftype' == nofile
+      " 5) ignore buffers matching airline#extensions#tabline#ignore_bufadd_pat
 
       " check buffer numbers first
       if index(exclude_buffers, nr) >= 0
         continue
-        " check paths second
+      " check paths second
       elseif !empty(exclude_paths) && s:ExcludePaths(nr, exclude_paths)
         continue
-        " check other types last
+      " ignore buffers matching airline#extensions#tabline#ignore_bufadd_pat
+      elseif airline#util#ignore_buf(bufname(nr))
+        continue
+      " check other types last
       elseif s:ExcludeOther(nr, exclude_preview)
         continue
       endif
