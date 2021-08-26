@@ -32,6 +32,30 @@ colors:
     cyan:    '#93a1a1' # base1
     white:   '#fdf6e3' # base3
 
+  # Vi mode cursor colors
+  #
+  # Colors for the cursor when the vi mode is active.
+  #
+  # Allowed values are CellForeground/CellBackground, which reference the
+  # affected cell, or hexadecimal colors like #ff00ff.
+  vi_mode_cursor:
+    text: CellBackground
+    cursor: '#6c71c4' # violet
+
+  # Search colors
+  #
+  # Colors used for the search bar and match highlighting.
+  search:
+    matches:
+      background: '#6c71c4' # violet
+      foreground: '#002b36' # base03
+    focused_match:
+      background: '#d33682' # magenta
+      foreground: '#002b36' # base03
+    bar:
+      background: '#6c71c4' # violet
+      foreground: '#002b36' # base03
+
 font:
   normal:
     family: Monaco for Powerline
@@ -43,8 +67,25 @@ font:
     family: Monaco for Powerline
   size: 12
 
-startup_mode: Maximized
-decorations: none
+window:
+  startup_mode: Maximized
+  decorations: none
+
+# Shell
+#
+# You can set `shell.program` to the path of your favorite shell, e.g. `/bin/fish`.
+# Entries in `shell.args` are passed unmodified as arguments to the shell.
+#
+# Default:
+#   - (macOS) /bin/bash --login
+#   - (Linux/BSD) user login shell
+#   - (Windows) powershell
+shell:
+  program: /bin/bash
+  args:
+    - --login
+    - -c
+    - "tmux attach || tmux"
 
 # If this is `true`, the cursor will be rendered as a hollow box when the
 # # window is not focused.
