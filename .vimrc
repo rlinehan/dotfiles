@@ -71,7 +71,7 @@ set background=dark
 colorscheme solarized
 highlight clear SignColumn
 
-" Airline
+" AIRLINE
 
 " disable Bufferline and instead just display buffer number and file name
 let g:airline#extensions#bufferline#enabled = 0
@@ -104,10 +104,28 @@ let g:airline_right_sep = '⮂'
 let g:airline_right_alt_sep = '⮃'
 let g:airline_symbols.branch = '⭠'
 let g:airline_symbols.readonly = '⭤'
-let g:airline_symbols.linenr = '⭡'
-let g:airline_symbols.maxlinenr = ''
-let g:airline_symbols.whitespace = '✹'
+let g:airline_symbols.colnr = ' ℅:'
+let g:airline_symbols.linenr = ' ⭡:'
+let g:airline_symbols.maxlinenr = '' "don't want a symbol for this
+let g:airline_symbols.dirty = ' ✹'
+let g:airline_symbols.whitespace = 'Ξ'
+let g:airline_symbols.notexists = '¡'
 let g:airline_inactive_collapse=1
+
+let airline#extensions#syntastic#error_symbol = 'Err: '
+let airline#extensions#syntastic#stl_format_err = '%E{%fe/%e}'
+let airline#extensions#syntastic#warning_symbol = 'Warn: '
+let airline#extensions#syntastic#stl_format_warn = '%W{%fw/%w}'
+
+" SYNTASTIC
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_mode_map = {
+      \ "mode": "active",
+      \ "active_filetypes": [],
+      \ "passive_filetypes": ["go"] } "conflicts with vim-go
+let g:go_list_type = "quickfix"
+" TODO could edit the error/warn/style signs, maybe later
 
 " CLOJURE
 
