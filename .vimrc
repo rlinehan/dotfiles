@@ -24,16 +24,13 @@ let &colorcolumn=join(range(81,999),",")
 let &colorcolumn="80,".join(range(120,999),",")
 
 set laststatus=2
-" Format the statusline
-"set statusline=[%n]\ %<%.99f%m%r%h\ %w\ \ %{CurDir()}%h\%=%-16(\ %l/%L,\ %c%V\ %{GitBranch()}\ %)
-"set statusline=[%n]\ %<%.99f%m%r%h\ %w\ \ %{CurDir()}%h\%=%-16(\ %l/%L,\ %c%V\ %{fugitive#statusline()}\ %)
 set encoding=utf-8
 
 set showmatch   " show matching brackets
 set showcmd   " show (partial) command in status line
 
 set wildmenu
-"set wildmode=list:longest,full
+set wildmode=list:longest,full
 
 " define Browse command to work around fugitive Gbrowse issue
 " see
@@ -76,17 +73,6 @@ highlight clear SignColumn
 " disable Bufferline and instead just display buffer number and file name
 let g:airline#extensions#bufferline#enabled = 0
 let g:airline_section_c = '%n: %f'
-"let g:bufferline_fname_mod = ':~:.'
-"let g:bufferline_echo = 0
-"let g:bufferline_rotate = 1
-"let g:bufferline_fixed_index = -1 "always last - so it is visible
-"let g:bufferline_pathshorten = 0
-
-let g:airline_powerline_fonts = 1
-let g:airline_detect_modified = 0
-let g:airline_theme = 'luna'
-" make inactive statusline stand out a bit more
-let g:airline_base16_improved_contrast = 1
 
 " truncate branch names in Airline
 let g:airline#extensions#branch#format = 2
@@ -95,6 +81,13 @@ let g:airline#extensions#branch#displayed_head_limit = 20
 " only display file encoding if it is not `utf-8[unix]`
 let g:airline#parts#ffenc#skip_expected_string='utf-8[unix]'
 
+" various display settings
+let g:airline_powerline_fonts = 1
+let g:airline_detect_modified = 0
+let g:airline_theme = 'luna'
+let g:airline_base16_improved_contrast = 1 " make inactive statusline stand out a bit more
+
+" symbols
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
@@ -112,6 +105,7 @@ let g:airline_symbols.whitespace = 'Ξ'
 let g:airline_symbols.notexists = '¡'
 let g:airline_inactive_collapse=1
 
+" syntastic error/warning display
 let airline#extensions#syntastic#error_symbol = 'Err: '
 let airline#extensions#syntastic#stl_format_err = '%E{%fe/%e}'
 let airline#extensions#syntastic#warning_symbol = 'Warn: '
