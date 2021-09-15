@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Currently for use with github codespaces
 
@@ -14,7 +15,10 @@ apt-get update
 apt-get install -y tree fzf ripgrep fzf
 
 # remove existing .gitconfig
-mv .gitconfig{,.bak}
+if [ -f "$HOME/.gitconfig" ]
+then
+  mv "$HOME/.gitconfig" "$HOME/.gitconfig.bak"
+fi
 
 echo ""
 echo "=========================================================="
