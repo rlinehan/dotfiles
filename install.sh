@@ -11,7 +11,7 @@ echo "* Install packages:"
 echo "----------------------------------------------------------"
 
 apt-get update
-apt-get install tree fzf ripgrep fzf
+apt-get install -y tree fzf ripgrep fzf
 
 echo ""
 echo "=========================================================="
