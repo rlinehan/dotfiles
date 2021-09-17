@@ -12,7 +12,7 @@ apt-get update
 apt-get install -y tree ripgrep
 
 brew install fzf
-$(brew --prefix)/opt/fzf/install
+$(brew --prefix)/opt/fzf/install --all
 
 # remove existing .gitconfig
 if [ -f "$HOME/.gitconfig" ]
