@@ -3,16 +3,16 @@ set -e
 
 # Currently for use with github codespaces
 
-# set a different tmux prefix so it doesn't conflict with local one
-tmux set-option -g prefix C-]
-
 echo ""
 echo "=========================================================="
 echo "* Install packages:"
 echo "----------------------------------------------------------"
 
 apt-get update
-apt-get install -y tree fzf ripgrep fzf
+apt-get install -y tree ripgrep
+
+brew install fzf
+$(brew --prefix)/opt/fzf/install
 
 # remove existing .gitconfig
 if [ -f "$HOME/.gitconfig" ]

@@ -50,11 +50,7 @@ set hlsearch  " highlighted search
 "nnoremap <C-L> :noh<CR><C-L>
 
 " Use fzf in Vim
-if has('linux')
-  set rtp+=/home/linuxbrew/.linuxbrew/opt/fzf
-else
-  set rtp+=/usr/local/opt/fzf
-endif
+set rtp+=$(brew --prefix)/opt/fzf
 
 " Display whitespace characters nicely when using 'set list'
 set listchars=eol:$,tab:>-,trail:-,extends:>,precedes:<
