@@ -8,11 +8,8 @@ echo "=========================================================="
 echo "* Install packages:"
 echo "----------------------------------------------------------"
 
-apt-get update
-apt-get install -y tree ripgrep
-
 brew_prefix="/home/linuxbrew/.linuxbrew"
-"$brew_prefix/bin/brew" install fzf
+"$brew_prefix/bin/brew" install fzf ripgrep tree
 "$brew_prefix/opt/fzf/install" --all
 
 # remove existing .gitconfig
