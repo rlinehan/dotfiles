@@ -69,7 +69,7 @@ font:
 
 window:
   startup_mode: Maximized
-  decorations: none
+    #decorations: none
 
 # Shell
 #
