@@ -1,6 +1,6 @@
 [user]
   name = Ruth Linehan
-  email = ruth.linehan@gmail.com
+  email = 1530016+rlinehan@users.noreply.github.com
 [includeIf "gitdir:~/github/"]
   path = .gitconfig-github
 [github]
