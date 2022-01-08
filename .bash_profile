@@ -15,6 +15,9 @@ if which jenv > /dev/null; then eval "$(jenv init -)"; fi
 # Add $GOPATH to $PATH if go is installed
 if which go > /dev/null; then PATH=$PATH:$HOME/go/bin; fi
 
+# Configure homebrew if it exists
+if [ -d "/opt/homebrew" ]; then eval "$(/opt/homebrew/bin/brew shellenv)"; fi
+
 #export CC=gcc-4.2
 #export CC=gcc
 
@@ -117,6 +120,9 @@ PROMPT_COMMAND='PS1="$(ps1_identity)@${c_host}\h${c_reset}:${c_path}\w${c_reset}
 if [ -f ~/.bashrc ]; then
   . ~/.bashrc
 fi
+
+# for secure, machine usable tokens
+if [ -f "$HOME/.profile.local" ]; then . "$HOME/.profile.local"; fi
 
 source ~/.bash_aliases
 
