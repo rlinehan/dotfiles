@@ -1,5 +1,9 @@
-PATH=/usr/local/bin:$HOME/bin:$PATH
 export BASH_SILENCE_DEPRECATION_WARNING=1
+
+# Configure homebrew if it exists
+if [ -d "/opt/homebrew" ]; then eval "$(/opt/homebrew/bin/brew shellenv)"; fi
+
+PATH=/usr/local/bin:$HOME/bin:$PATH
 
 # Configure RVM if it exists
 if [ -d "$HOME/.rvm/bin"  ]; then
@@ -15,8 +19,6 @@ if which jenv > /dev/null; then eval "$(jenv init -)"; fi
 # Add $GOPATH to $PATH if go is installed
 if which go > /dev/null; then PATH=$PATH:$HOME/go/bin; fi
 
-# Configure homebrew if it exists
-if [ -d "/opt/homebrew" ]; then eval "$(/opt/homebrew/bin/brew shellenv)"; fi
 
 #export CC=gcc-4.2
 #export CC=gcc
