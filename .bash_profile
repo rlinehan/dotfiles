@@ -19,6 +19,8 @@ if which jenv > /dev/null; then eval "$(jenv init -)"; fi
 # Add $GOPATH to $PATH if go is installed
 if which go > /dev/null; then PATH=$PATH:$HOME/go/bin; fi
 
+# Configure nodenv if it exists
+if which nodenv > /dev/null; then eval "$(nodenv init -)"; fi
 
 #export CC=gcc-4.2
 #export CC=gcc
@@ -134,3 +136,7 @@ source ~/.git-prompt.sh
 export PATH
 
 export PATH="/usr/local/opt/mysql@5.7/bin:$PATH"
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
