@@ -9,7 +9,7 @@ brew "vim"
 
 cask "graphiql"
 cask "firefox"
-cask --no-quarantine 'alacritty'
+cask "alacritty"
 cask "slack"
 cask "spotify"
 cask "evernote"
