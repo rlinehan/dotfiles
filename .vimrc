@@ -203,6 +203,11 @@ au BufNewFile,BufRead *.py
 " JSON
 autocmd BufNewFile,BufRead *.json set ft=javascript
 
+" TYPESCRIPT
+" format with prettier
+autocmd FileType typescript setlocal formatprg=prettier\ --parser\ typescript
+
+
 " MISC
 
 set number  " line numbers
