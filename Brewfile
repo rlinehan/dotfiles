@@ -6,6 +6,7 @@ brew "rbenv"
 brew "jq"
 brew "gh"
 brew "vim"
+brew "tree"
 
 cask "graphiql"
 cask "firefox"
