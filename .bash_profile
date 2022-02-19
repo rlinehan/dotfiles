@@ -31,6 +31,10 @@ then
   eval "$(pyenv init -)"
 fi
 
+if [ -d "$HOME/.momento/bin" ]; then
+  PATH=$PATH:$HOME/.momento/bin
+fi
+
 #export CC=gcc-4.2
 #export CC=gcc
 
