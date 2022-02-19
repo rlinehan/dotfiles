@@ -49,6 +49,16 @@ set smartcase   " unless the search string contains uppercase
 set hlsearch  " highlighted search
 "nnoremap <C-L> :noh<CR><C-L>
 
+set re=0 "Old regexp engine incurs performance issues for yats
+
+" syntax completion - https://github.com/vim-scripts/SyntaxComplete
+if has("autocmd") && exists("+omnifunc")
+  autocmd Filetype *
+        \	if &omnifunc == "" |
+        \		setlocal omnifunc=syntaxcomplete#Complete |
+        \	endif
+endif
+
 " Use fzf in Vim
 let &rtp = &rtp . "," . trim(system("brew --prefix")) . "/opt/fzf"
 
