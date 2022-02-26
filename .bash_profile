@@ -23,12 +23,12 @@ if which go > /dev/null; then PATH=$PATH:$HOME/go/bin; fi
 if which nodenv > /dev/null; then eval "$(nodenv init -)"; fi
 
 # Configure pyenv if it exists
+# see docs at https://github.com/pyenv/pyenv#basic-github-checkout - need to
+# set up .profile and .bashrc as well, currently not checked into dotfiles
+# repo
 if which pyenv > /dev/null;
 then
-  export PYENV_ROOT="$HOME/.pyenv"
-  export PATH="$PYENV_ROOT/bin:$PATH"
   eval "$(pyenv init --path)"
-  eval "$(pyenv init -)"
 fi
 
 if [ -d "$HOME/.momento/bin" ]; then
