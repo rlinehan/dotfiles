@@ -46,6 +46,10 @@ The gitconfig now includes aliases for adding and updating vim plugins:
 * [tpope/vim-rhubarb](https://github.com/tpope/vim-rhubarb)
 * [jremmen/vim-ripgrep](https://github.com/jremmen/vim-ripgrep)
 * [fatih/vim-go](https://github.com/fatih/vim-go)
+* [udalov/vim-kotlin](https://github.com/udalov/vim-kotlin)
+* [HerringtonDarkholme/yats.vim](https://github.com/HerringtonDarkholme/yats.vim)
+* [neoclide/coc.vim](https://github.com/neoclide/coc.nvim)
+* [rust-lang/rust.vim](https://github.com/rust-lang/rust.vim)
 
 # Alacritty setup
 
