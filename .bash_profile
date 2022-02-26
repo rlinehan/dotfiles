@@ -31,6 +31,12 @@ then
   eval "$(pyenv init --path)"
 fi
 
+# Configure rustup if it exists
+if [ -d "$HOME/.cargo/bin" ]; then
+  . "$HOME/.cargo/env"
+fi
+
+
 if [ -d "$HOME/.momento/bin" ]; then
   PATH=$PATH:$HOME/.momento/bin
 fi
