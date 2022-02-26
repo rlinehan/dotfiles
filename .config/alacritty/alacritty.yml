@@ -65,7 +65,7 @@ font:
     family: Monaco for Powerline
   bold_italic:
     family: Monaco for Powerline
-  size: 12
+  size: 16
 
 window:
   startup_mode: Maximized
