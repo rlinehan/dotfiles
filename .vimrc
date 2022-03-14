@@ -217,6 +217,12 @@ autocmd BufNewFile,BufRead *.json set ft=javascript
 " format with prettier
 autocmd FileType typescript setlocal formatprg=prettier\ --parser\ typescript
 
+" COC
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
 
 " MISC
 
