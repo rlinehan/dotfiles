@@ -8,6 +8,4 @@ set noerrorbells
 set showmode
 set hlsearch
 "set hls
-
-
-
+set ideajoin
