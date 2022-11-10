@@ -78,8 +78,10 @@ function! coc#rpc#restart()
     call coc#rpc#start_server()
   else
     call coc#highlight#clear_all()
+    call coc#ui#sign_unplace()
     call coc#float#close_all()
     call coc#rpc#request('detach', [])
+    let g:coc_service_initialized = 0
     sleep 100m
     let s:client['command'] = coc#util#job_command()
     call coc#client#restart(s:name)
