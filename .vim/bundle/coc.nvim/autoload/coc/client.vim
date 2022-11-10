@@ -5,7 +5,7 @@ let s:is_win = has("win32") || has("win64")
 let s:clients = {}
 
 if get(g:, 'node_client_debug', 0)
-  echohl WarningMsg | echon '[coc.nvim] Enable g:node_client_debug could impact your vim experience' | echohl None
+  echohl WarningMsg | echo '[coc.nvim] Enable g:node_client_debug could impact your vim experience' | echohl None
   let $NODE_CLIENT_LOG_LEVEL = 'debug'
   if exists('$NODE_CLIENT_LOG_FILE')
     let s:logfile = resolve($NODE_CLIENT_LOG_FILE)
@@ -43,9 +43,13 @@ function! s:start() dict
     return
   endif
   let timeout = string(get(g:, 'coc_channel_timeout', 30))
-  let disable_warning = string(get(g:, 'coc_disable_startup_warning', 0))
   let tmpdir = fnamemodify(tempname(), ':p:h')
   if s:is_vim
+    if get(g:, 'node_client_debug', 0)
+      let file = tmpdir . '/coc.log'
+      call ch_logfile(file, 'w')
+      echohl MoreMsg | echo '[coc.nvim] channel log to '.file | echohl None
+    endif
     let options = {
           \ 'in_mode': 'json',
           \ 'out_mode': 'json',
@@ -88,10 +92,12 @@ function! s:start() dict
           \ 'TMPDIR': tmpdir
           \ }
     else
-      let original = {
-            \ 'NODE_NO_WARNINGS': getenv('NODE_NO_WARNINGS'),
-            \ 'TMPDIR': getenv('TMPDIR'),
-            \ }
+      if exists('*getenv')
+        let original = {
+              \ 'NODE_NO_WARNINGS': getenv('NODE_NO_WARNINGS'),
+              \ 'TMPDIR': getenv('TMPDIR'),
+              \ }
+      endif
       if exists('*setenv')
         call setenv('COC_NVIM', '1')
         call setenv('NODE_NO_WARNINGS', '1')
@@ -123,12 +129,43 @@ endfunction
 
 function! s:on_stderr(name, msgs)
   if get(g:, 'coc_vim_leaving', 0) | return | endif
-  if get(g:, 'coc_disable_uncaught_error', 0) | return | endif
   let data = filter(copy(a:msgs), '!empty(v:val)')
   if empty(data) | return | endif
   let client = a:name ==# 'coc' ? '[coc.nvim]' : '['.a:name.']'
   let data[0] = client.': '.data[0]
-  call coc#util#echo_messages('Error', data)
+  if a:name ==# 'coc' && len(filter(copy(data), 'v:val =~# "SyntaxError: Unexpected token"'))
+    call coc#client#check_version()
+  endif
+  if get(g:, 'coc_disable_uncaught_error', 0) | return | endif
+  call coc#ui#echo_messages('Error', data)
+endfunction
+
+function! coc#client#check_version() abort
+  if (has_key(g:, 'coc_node_path'))
+    let node = expand(g:coc_node_path)
+  else
+    let node = $COC_NODE_PATH == '' ? 'node' : $COC_NODE_PATH
+  endif
+  let output = system(node . ' --version')
+  let msgs = []
+  if v:shell_error
+    let msgs = ['Unexpected result from node --version'] + split(output, '\n')
+  else
+    let ms = matchlist(output, 'v\(\d\+\).\(\d\+\).\(\d\+\)')
+    if empty(ms)
+      let msgs = ['Unable to detect version of node, make sure your node executable is http://nodejs.org/']
+    elseif str2nr(ms[1]) < 14 || (str2nr(ms[1]) == 14 && str2nr(ms[2]) < 14)
+      let msgs = ['Current Node.js version '.trim(output).' < 14.14.0 ', 'Please upgrade your node.js']
+    endif
+  endif
+  if !empty(msgs)
+    call coc#notify#create(msgs, {
+          \ 'borderhighlight': 'CocErrorSign',
+          \ 'highlight': 'Normal',
+          \ 'timeout': 50000,
+          \ 'kind': 'error',
+          \ })
+  endif
 endfunction
 
 function! s:on_exit(name, code) abort
@@ -280,6 +317,19 @@ function! coc#client#stop(name) abort
   call s:on_exit(a:name, 0)
   echohl MoreMsg | echom 'client '.a:name.' stopped!' | echohl None
   return 1
+endfunction
+
+function! coc#client#kill(name) abort
+  let client = get(s:clients, a:name, v:null)
+  if empty(client) | return 1 | endif
+  let running = coc#client#is_running(a:name)
+  if running
+    if s:is_vim
+      call job_stop(ch_getjob(client['channel']), 'kill')
+    else
+      call jobstop(client['chan_id'])
+    endif
+  endif
 endfunction
 
 function! coc#client#request(name, method, args)
