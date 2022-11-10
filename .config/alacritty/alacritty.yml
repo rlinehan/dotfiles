@@ -52,7 +52,7 @@ colors:
     focused_match:
       background: '#d33682' # magenta
       foreground: '#002b36' # base03
-    bar:
+    colors.footer.bar:
       background: '#6c71c4' # violet
       foreground: '#002b36' # base03
 
