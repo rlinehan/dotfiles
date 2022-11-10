@@ -47,8 +47,8 @@
   ra = "! f() { git remote add $1 git@github.com:$1/$(basename $(git remote show -n origin | grep Fetch | cut -d: -f2-)); git remote -v;}; f"
   cl = "! f() { git clone git@github.com:rlinehan/$1.git ;}; f"
 
-  vimadd = "! f() { git subtree add --prefix .vim/bundle/$2 https://github.com/$1/$2.git master --squash;}; f"
-  vimupdate = "! f() { git subtree pull --prefix .vim/bundle/$2 https://github.com/$1/$2.git master --squash -m \"Merge commit `git rev-parse FETCH_HEAD` from `cut -f 3 $(git rev-parse --git-dir)/FETCH_HEAD`\";}; f"
+  vimadd = "! f() { git subtree add --prefix .vim/bundle/$2 https://github.com/$1/$2.git ${3:-master} --squash;}; f"
+  vimupdate = "! f() { git subtree pull --prefix .vim/bundle/$2 https://github.com/$1/$2.git ${3:-master} --squash -m \"Merge commit `git rev-parse FETCH_HEAD` from `cut -f 3 $(git rev-parse --git-dir)/FETCH_HEAD`\";}; f"
 
   changelog = "log --pretty=format:'%ad - %aN <%aE>%n * %s (%h)%n' --date=short --date-order --no-merges --patience -M -C -C -c"
 
