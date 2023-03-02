@@ -11,6 +11,14 @@
   helper = osxkeychain
 [merge]
   conflictstyle = diff3
+[diff]
+	tool = difftastic
+[difftool]
+	prompt = false
+[difftool "difftastic"]
+	cmd = difft "$LOCAL" "$REMOTE"
+[pager]
+	difftool = true
 [color]
   diff = auto
   status = auto
@@ -48,7 +56,8 @@
   cl = "! f() { git clone git@github.com:rlinehan/$1.git ;}; f"
 
   vimadd = "! f() { git subtree add --prefix .vim/bundle/$2 https://github.com/$1/$2.git ${3:-master} --squash;}; f"
-  vimupdate = "! f() { git subtree pull --prefix .vim/bundle/$2 https://github.com/$1/$2.git ${3:-master} --squash -m \"Merge commit `git rev-parse FETCH_HEAD` from `cut -f 3 $(git rev-parse --git-dir)/FETCH_HEAD`\";}; f"
+  # This... isn't entirely working in terms of what it reports
+  vimupdate = "! f() { git subtree pull --prefix .vim/bundle/$2 https://github.com/$1/$2.git ${3:-master} --squash -m \"Merge commit `git rev-parse FETCH_HEAD` from ${3:-master}\";}; f"
 
   changelog = "log --pretty=format:'%ad - %aN <%aE>%n * %s (%h)%n' --date=short --date-order --no-merges --patience -M -C -C -c"
 
@@ -77,6 +86,12 @@
   # checkout a branch and do a pull to update it (for use in a centralized
   # GitHub workflow)
   evolve = "! f() { git checkout $1 && git pull;}; f"
+
+  # amend commits other than HEAD
+  fancyamend = "! f() { sha=`git rev-parse $1`; git commit --fixup=amend:$sha && git rebase `git rev-parse $sha~1` -i --autosquash;}; f"
+
+	# `git dft` is less to type than `git difftool`.
+	dft = difftool
 
 [rerere]
   enabled = 1
