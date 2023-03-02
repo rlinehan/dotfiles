@@ -124,7 +124,7 @@ function! coc#ui#run_terminal(opts, cb)
   endif
   let opts = {
         \ 'cmd': cmd,
-        \ 'cwd': get(a:opts, 'cwd', getcwd()),
+        \ 'cwd': empty(get(a:opts, 'cwd', '')) ? getcwd() : a:opts['cwd'],
         \ 'keepfocus': get(a:opts, 'keepfocus', 0),
         \ 'Callback': {status, bufnr, content -> a:cb(v:null, {'success': status == 0 ? v:true : v:false, 'bufnr': bufnr, 'content': content})}
         \}
@@ -147,8 +147,6 @@ function! coc#ui#echo_messages(hl, msgs)
     return
   endif
   execute 'echohl '.a:hl
-  echom a:msgs[0]
-  redraw
   echo join(msgs, "\n")
   echohl None
 endfunction
@@ -326,6 +324,14 @@ function! coc#ui#change_lines(bufnr, list) abort
 endfunction
 
 function! coc#ui#open_url(url)
+  if isdirectory(a:url) && $TERM_PROGRAM ==# "iTerm.app"
+    call coc#ui#iterm_open(a:url)
+    return
+  endif
+  if !empty(get(g:, 'coc_open_url_command', ''))
+    call system(g:coc_open_url_command.' '.a:url)
+    return
+  endif
   if has('mac') && executable('open')
     call system('open '.a:url)
     return
@@ -470,4 +476,92 @@ function! coc#ui#outline_close_preview() abort
   if winid
     call coc#float#close(winid)
   endif
+endfunction
+
+" Ignore error from autocmd when file opened
+function! coc#ui#safe_open(cmd, file) abort
+  let bufname = fnameescape(a:file)
+  try
+    execute a:cmd.' 'bufname
+  catch /.*/
+    if bufname('%') != bufname
+      throw v:exception
+    endif
+  endtry
+endfunction
+
+" Use noa to setloclist, avoid BufWinEnter autocmd
+function! coc#ui#setloclist(nr, items, action, title) abort
+  if a:action ==# ' '
+    let title = get(getloclist(a:nr, {'title': 1}), 'title', '')
+    let action = title ==# a:title ? 'r' : ' '
+    noa call setloclist(a:nr, [], action, {'title': a:title, 'items': a:items})
+  else
+    noa call setloclist(a:nr, [], a:action, {'title': a:title, 'items': a:items})
+  endif
+endfunction
+
+function! coc#ui#get_mouse() abort
+  if get(g:, 'coc_node_env', '') ==# 'test'
+    return get(g:, 'mouse_position', [win_getid(), line('.'), col('.')])
+  endif
+  return [v:mouse_winid,v:mouse_lnum,v:mouse_col]
+endfunction
+
+" viewId - identifier of tree view
+" bufnr - bufnr tree view
+" winid - winid of tree view
+" bufname -  bufname of tree view
+" command - split command
+" optional options - bufhidden, canSelectMany, winfixwidth
+function! coc#ui#create_tree(opts) abort
+  let viewId = a:opts['viewId']
+  let bufname = a:opts['bufname']
+  let tabid = coc#util#tabnr_id(tabpagenr())
+  let winid = s:get_tree_winid(a:opts)
+  let bufnr = a:opts['bufnr']
+  if !bufloaded(bufnr)
+    let bufnr = -1
+  endif
+  if winid != -1
+    call win_gotoid(winid)
+    if bufnr('%') == bufnr
+      return [bufnr, winid, tabid]
+    elseif bufnr != -1
+      execute 'silent keepalt buffer '.bufnr
+    else
+      execute 'silent keepalt edit +setl\ buftype=nofile '.bufname
+      call s:set_tree_defaults(a:opts)
+    endif
+  else
+    " need to split
+    let cmd = get(a:opts, 'command', 'belowright 30vs')
+    execute 'silent keepalt '.cmd.' +setl\ buftype=nofile '.bufname
+    call s:set_tree_defaults(a:opts)
+    let winid = win_getid()
+  endif
+  let w:cocViewId = viewId
+  return [winbufnr(winid), winid, tabid]
+endfunction
+
+" valid window id or -1
+function! s:get_tree_winid(opts) abort
+  let viewId = a:opts['viewId']
+  let winid = a:opts['winid']
+  if winid != -1 && coc#window#visible(winid)
+    return winid
+  endif
+  if winid != -1
+    call coc#compat#execute(winid, 'noa close!', 'silent!')
+  endif
+  return coc#window#find('cocViewId', viewId)
+endfunction
+
+function! s:set_tree_defaults(opts) abort
+  let bufhidden = get(a:opts, 'bufhidden', 'wipe')
+  let signcolumn = get(a:opts, 'canSelectMany', v:false) ? 'yes' : 'no'
+  let winfixwidth = get(a:opts, 'winfixwidth', v:false) ? ' winfixwidth' : ''
+  execute 'setl bufhidden='.bufhidden.' signcolumn='.signcolumn.winfixwidth
+  setl nolist nonumber norelativenumber foldcolumn=0
+  setl nocursorline nobuflisted wrap undolevels=-1 filetype=coctree nomodifiable noswapfile
 endfunction

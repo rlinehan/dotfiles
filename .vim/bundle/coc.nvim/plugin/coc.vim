@@ -48,7 +48,6 @@ call s:checkVersion()
 
 let g:did_coc_loaded = 1
 let g:coc_service_initialized = 0
-let s:is_win = has('win32') || has('win64')
 let s:root = expand('<sfile>:h:h')
 let s:is_vim = !has('nvim')
 let s:is_gvim = s:is_vim && has("gui_running")
@@ -65,6 +64,7 @@ function! CocTagFunc(pattern, flags, info) abort
   return coc#rpc#request('getTagList', [])
 endfunction
 
+" Used by popup prompt on vim
 function! CocPopupCallback(bufnr, arglist) abort
   if len(a:arglist) == 2
     if a:arglist[0] == 'confirm'
@@ -87,9 +87,7 @@ function! CocPopupCallback(bufnr, arglist) abort
         call coc#rpc#notify('CocAutocmd', ['TextChangedI', a:bufnr, info])
       endif
     elseif a:arglist[0] == 'send'
-      let key = a:arglist[1]
-      let escaped = strcharpart(key, 1, strchars(key) - 2)
-      call coc#rpc#notify('PromptKeyPress', [a:bufnr, escaped])
+      call coc#rpc#notify('PromptKeyPress', [a:bufnr, a:arglist[1]])
     endif
   endif
 endfunction
@@ -198,7 +196,7 @@ function! s:OpenConfig()
       call mkdir(home, 'p')
     end
   endif
-  execute 'edit '.home.'/coc-settings.json'
+  execute 'edit '.fnameescape(home.'/coc-settings.json')
   call coc#rpc#notify('checkJsonExtension', [])
 endfunction
 
@@ -253,11 +251,6 @@ function! s:CreateHighlight(group, fg, bg) abort
   endif
 endfunction
 
-function! s:CursorRangeFromSelected(type, ...) abort
-  " add range by operator
-  call coc#rpc#request('cursorsSelect', [bufnr('%'), 'operator', a:type])
-endfunction
-
 function! s:OpenDiagnostics(...) abort
   let height = get(a:, 1, 0)
   call coc#rpc#request('fillDiagnostics', [bufnr('%')])
@@ -272,9 +265,7 @@ function! s:Disable() abort
   if get(g:, 'coc_enabled', 0) == 0
     return
   endif
-  augroup coc_nvim
-    autocmd!
-  augroup end
+  autocmd! coc_nvim
   call coc#rpc#request('detach', [])
   echohl MoreMsg
     echom '[coc.nvim] Event disabled'
@@ -290,6 +281,9 @@ function! s:Autocmd(...) abort
 endfunction
 
 function! s:HandleCharInsert(char, bufnr) abort
+  if get(g:, 'coc_feeding_keys', 0)
+    return
+  endif
   if get(g:, 'coc_disable_space_report', 0)
     let g:coc_disable_space_report = 0
     if a:char ==# ' '
@@ -297,6 +291,18 @@ function! s:HandleCharInsert(char, bufnr) abort
     endif
   endif
   call s:Autocmd('InsertCharPre', a:char, a:bufnr)
+endfunction
+
+function! s:HandleTextChangedI(bufnr) abort
+  if get(g:, 'coc_feeding_keys', 0)
+    unlet g:coc_feeding_keys
+  endif
+  call s:Autocmd('TextChangedI', a:bufnr, coc#util#change_info())
+endfunction
+
+function! s:HandleInsertLeave(bufnr) abort
+  call coc#pum#close()
+  call s:Autocmd('InsertLeave', a:bufnr)
 endfunction
 
 function! s:HandleWinScrolled(winid) abort
@@ -319,16 +325,14 @@ function! s:SyncAutocmd(...)
   call coc#rpc#request('CocAutocmd', a:000)
 endfunction
 
-function! s:CheckHighlight() abort
-  let fgId = synIDtrans(hlID('CocSelectedText'))
-  let guifg = synIDattr(fgId, 'fg', 'gui')
-  if empty(guifg)
-    call s:Highlight()
-  endif
-endfunction
-
 function! s:VimLeavePre() abort
   let g:coc_vim_leaving = 1
+  call s:Autocmd('VimLeavePre')
+  if s:is_vim && exists('$COC_NVIM_REMOTE_ADDRESS')
+    " Helps to avoid connection error.
+    call coc#rpc#close_connection()
+    return
+  endif
   if get(g:, 'coc_node_env', '') ==# 'test'
     return
   endif
@@ -337,24 +341,37 @@ function! s:VimLeavePre() abort
   endif
 endfunction
 
+function! s:VimEnter() abort
+  if coc#rpc#started()
+    if !exists('$COC_NVIM_REMOTE_ADDRESS')
+      call coc#rpc#notify('VimEnter', [coc#util#path_replace_patterns(), join(globpath(&runtimepath, "", 0, 1), ",")])
+    endif
+  elseif get(g:, 'coc_start_at_startup', 1)
+    call coc#rpc#start_server()
+  endif
+  call s:Highlight()
+endfunction
+
 function! s:Enable(initialize)
   if get(g:, 'coc_enabled', 0) == 1
     return
   endif
+
   let g:coc_enabled = 1
+  sign define CocCurrentLine linehl=CocMenuSel
+  sign define CocListCurrent linehl=CocListLine
+  sign define CocTreeSelected linehl=CocTreeSelected
+  if s:is_vim
+    call coc#api#tabpage_ids()
+  endif
 
   augroup coc_nvim
     autocmd!
 
-    if coc#rpc#started()
-      autocmd VimEnter            * call coc#rpc#notify('VimEnter', [])
-    elseif get(g:, 'coc_start_at_startup', 1)
-      autocmd VimEnter            * call coc#rpc#start_server()
-    endif
-    if v:vim_did_enter
-      call s:CheckHighlight()
+    if !v:vim_did_enter
+      autocmd VimEnter            * call s:VimEnter()
     else
-      autocmd VimEnter            * call timer_start(0, { -> s:CheckHighlight()})
+      call s:Highlight()
     endif
     if s:is_vim
       if exists('##DirChanged')
@@ -363,15 +380,16 @@ function! s:Enable(initialize)
       if exists('##TerminalOpen')
         autocmd TerminalOpen      * call s:Autocmd('TermOpen', +expand('<abuf>'))
       endif
+      autocmd CursorMoved         list:///* call coc#list#select(bufnr('%'), line('.'))
+      autocmd TabNew              * call coc#api#tabpage_ids()
     else
       autocmd DirChanged        * call s:Autocmd('DirChanged', get(v:event, 'cwd', ''))
       autocmd TermOpen          * call s:Autocmd('TermOpen', +expand('<abuf>'))
       autocmd WinEnter          * call coc#float#nvim_win_enter(win_getid())
     endif
     if exists('##CompleteChanged')
-      autocmd CompleteChanged   * call coc#pum#stop()
+      autocmd CompleteChanged   * call timer_start(1, { -> coc#pum#close()})
     endif
-    autocmd CursorMoved         list:///* call coc#list#select(bufnr('%'), line('.'))
     autocmd CursorHold          * call coc#float#check_related()
     if exists('##WinClosed')
       autocmd WinClosed         * call s:HandleWinClosed(+expand('<amatch>'))
@@ -381,8 +399,8 @@ function! s:Enable(initialize)
     if exists('##WinScrolled')
       autocmd WinScrolled       * call s:HandleWinScrolled(+expand('<amatch>'))
     endif
-    autocmd TabNew              * call s:Autocmd('TabNew', tabpagenr())
-    autocmd TabClosed           * call s:Autocmd('TabClosed', +expand('<afile>'))
+    autocmd TabNew              * call s:Autocmd('TabNew', coc#util#tabnr_id(tabpagenr()))
+    autocmd TabClosed           * call s:Autocmd('TabClosed', coc#util#tabpages())
     autocmd WinLeave            * call s:Autocmd('WinLeave', win_getid())
     autocmd WinEnter            * call s:Autocmd('WinEnter', win_getid())
     autocmd BufWinLeave         * call s:Autocmd('BufWinLeave', +expand('<abuf>'), bufwinid(+expand('<abuf>')))
@@ -392,8 +410,8 @@ function! s:Enable(initialize)
     if exists('##TextChangedP')
       autocmd TextChangedP      * call s:Autocmd('TextChangedP', +expand('<abuf>'), coc#util#change_info())
     endif
-    autocmd TextChangedI        * call s:Autocmd('TextChangedI', +expand('<abuf>'), coc#util#change_info())
-    autocmd InsertLeave         * call s:Autocmd('InsertLeave', +expand('<abuf>'))
+    autocmd TextChangedI        * call s:HandleTextChangedI(+expand('<abuf>'))
+    autocmd InsertLeave         * call s:HandleInsertLeave(+expand('<abuf>'))
     autocmd InsertEnter         * call s:Autocmd('InsertEnter', +expand('<abuf>'))
     autocmd BufHidden           * call s:Autocmd('BufHidden', +expand('<abuf>'))
     autocmd BufEnter            * call s:Autocmd('BufEnter', +expand('<abuf>'))
@@ -409,7 +427,6 @@ function! s:Enable(initialize)
     autocmd FocusGained         * if mode() !~# '^c' | call s:Autocmd('FocusGained') | endif
     autocmd FocusLost           * call s:Autocmd('FocusLost')
     autocmd VimResized          * call s:Autocmd('VimResized', &columns, &lines)
-    autocmd VimLeavePre         * call s:Autocmd('VimLeavePre')
     autocmd VimLeavePre         * call s:VimLeavePre()
     autocmd BufReadCmd,FileReadCmd,SourceCmd list://* call coc#list#setup(expand('<amatch>'))
     autocmd BufWriteCmd __coc_refactor__* :call coc#rpc#notify('saveRefactor', [+expand('<abuf>')])
@@ -433,20 +450,27 @@ function! s:Highlight() abort
   hi default CocMarkdownLink  ctermfg=Blue    guifg=#15aabf guibg=NONE
   hi default CocDisabled      guifg=#999999   ctermfg=gray
   hi default CocSearch        ctermfg=Blue    guifg=#15aabf guibg=NONE
+  hi default CocLink          term=underline cterm=underline gui=underline guisp=#15aabf
   if coc#highlight#get_contrast('Normal', has('nvim') ? 'NormalFloat' : 'Pmenu') > 2.0
-    exe 'hi default CocFloating '.coc#highlight#create_bg_command('Normal', &background ==# 'dark' ? -0.4 : 0.1)
-    exe 'hi default CocMenuSel '.coc#highlight#create_bg_command('CocFloating', &background ==# 'dark' ? -0.2 : 0.05)
-    exe 'hi default CocFloatThumb '.coc#highlight#create_bg_command('CocFloating', &background ==# 'dark' ? -0.3 : 0.2)
-    exe 'hi default CocFloatSbar '.coc#highlight#create_bg_command('CocFloatThumb', &background ==# 'dark' ? -0.5 : 0.3)
+    exe 'hi default CocFloating '.coc#highlight#create_bg_command('Normal', &background ==# 'dark' ? -30 : 30)
+    exe 'hi default CocMenuSel '.coc#highlight#create_bg_command('CocFloating', &background ==# 'dark' ? -20 : 20)
+    exe 'hi default CocFloatThumb '.coc#highlight#create_bg_command('CocFloating', &background ==# 'dark' ? -40 : 40)
+    hi default link CocFloatSbar CocFloating
   else
     exe 'hi default link CocFloating '.(has('nvim') ? 'NormalFloat' : 'Pmenu')
     if coc#highlight#get_contrast('CocFloating', 'PmenuSel') > 2.0
-      exe 'hi default CocMenuSel '.coc#highlight#create_bg_command('CocFloating', &background ==# 'dark' ? -0.2 : 0.05)
+      exe 'hi default CocMenuSel '.coc#highlight#create_bg_command('CocFloating', &background ==# 'dark' ? -30 : 30)
     else
       exe 'hi default CocMenuSel '.coc#highlight#get_hl_command(synIDtrans(hlID('PmenuSel')), 'bg', '237', '#13354A')
     endif
     hi default link CocFloatThumb        PmenuThumb
     hi default link CocFloatSbar         PmenuSbar
+  endif
+  if coc#highlight#get_contrast('Normal', 'CursorLine') < 1.3
+    " Avoid color too close
+    exe 'hi default CocListLine '.coc#highlight#create_bg_command('Normal', &background ==# 'dark' ? -20 : 20)
+  else
+    hi default link CocListLine            CursorLine
   endif
   hi default link CocFloatActive         CocSearch
   hi default link CocFadeOut             Conceal
@@ -454,7 +478,6 @@ function! s:Highlight() abort
   hi default link CocMarkdownHeader      markdownH1
   hi default link CocDeprecatedHighlight CocStrikeThrough
   hi default link CocUnusedHighlight     CocFadeOut
-  hi default link CocListLine            CursorLine
   hi default link CocListSearch          CocSearch
   hi default link CocListMode            ModeMsg
   hi default link CocListPath            Comment
@@ -486,18 +509,11 @@ function! s:Highlight() abort
   hi default link CocPumMenu             CocFloating
   hi default link CocPumShortcut         Comment
   hi default link CocPumDeprecated       CocStrikeThrough
-  hi default CocPumVirtualText        ctermfg=12 guifg=#504945
-  hi default CocFloatDividingLine     ctermfg=12 guifg=#504945
+  hi default CocVirtualText             ctermfg=12 guifg=#504945
+  hi default link CocPumVirtualText        CocVirtualText
+  hi default link CocInputBoxVirtualText   CocVirtualText
+  hi default link CocFloatDividingLine     CocVirtualText
 
-  if !exists('*sign_getdefined') || empty(sign_getdefined('CocCurrentLine'))
-    sign define CocCurrentLine linehl=CocMenuSel
-  endif
-  if !exists('*sign_getdefined') || empty(sign_getdefined('CocListCurrent'))
-    sign define CocListCurrent linehl=CocListLine
-  endif
-  if !exists('*sign_getdefined') || empty(sign_getdefined('CocTreeSelected'))
-    sign define CocTreeSelected linehl=CocTreeSelected
-  endif
   if has('nvim-0.5.0')
     hi default CocCursorTransparent gui=strikethrough blend=100
   endif
@@ -541,88 +557,80 @@ function! s:Highlight() abort
 
   if get(g:, 'coc_default_semantic_highlight_groups', 1)
     let hlMap = {
-        \ 'Namespace': ['TSNamespace', 'Include'],
-        \ 'Type': ['TSType', 'Type'],
-        \ 'Class': ['TSConstructor', 'Special'],
-        \ 'Enum': ['TSEnum', 'Type'],
-        \ 'Interface': ['TSInterface', 'Type'],
-        \ 'Struct': ['TSStruct', 'Identifier'],
-        \ 'TypeParameter': ['TSParameter', 'Identifier'],
-        \ 'Parameter': ['TSParameter', 'Identifier'],
-        \ 'Variable': ['TSSymbol', 'Identifier'],
-        \ 'Property': ['TSProperty', 'Identifier'],
-        \ 'EnumMember': ['TSEnumMember', 'Constant'],
-        \ 'Event': ['TSEvent', 'Keyword'],
-        \ 'Function': ['TSFunction', 'Function'],
-        \ 'Method': ['TSMethod', 'Function'],
-        \ 'Macro': ['TSConstMacro', 'Define'],
-        \ 'Keyword': ['TSKeyword', 'Keyword'],
-        \ 'Modifier': ['TSModifier', 'StorageClass'],
-        \ 'Comment': ['TSComment', 'Comment'],
-        \ 'String': ['TSString', 'String'],
-        \ 'Number': ['TSNumber', 'Number'],
-        \ 'Boolean': ['TSBoolean', 'Boolean'],
-        \ 'Regexp': ['TSStringRegex', 'String'],
-        \ 'Operator': ['TSOperator', 'Operator'],
-        \ 'Decorator': ['TSSymbol', 'Identifier'],
-        \ 'Deprecated': ['TSStrike', 'CocDeprecatedHighlight']
+        \ 'Namespace': ['@namespace', 'Include'],
+        \ 'Type': ['@type', 'Type'],
+        \ 'Class': ['@constructor', 'Special'],
+        \ 'Enum': ['@type', 'Type'],
+        \ 'Interface': ['@type', 'Type'],
+        \ 'Struct': ['@structure', 'Identifier'],
+        \ 'TypeParameter': ['@parameter', 'Identifier'],
+        \ 'Parameter': ['@parameter', 'Identifier'],
+        \ 'Variable': ['@variable', 'Identifier'],
+        \ 'Property': ['@property', 'Identifier'],
+        \ 'EnumMember': ['@property', 'Constant'],
+        \ 'Event': ['@keyword', 'Keyword'],
+        \ 'Function': ['@function', 'Function'],
+        \ 'Method': ['@method', 'Function'],
+        \ 'Macro': ['@constant.macro', 'Define'],
+        \ 'Keyword': ['@keyword', 'Keyword'],
+        \ 'Modifier': ['@storageclass', 'StorageClass'],
+        \ 'Comment': ['@comment', 'Comment'],
+        \ 'String': ['@string', 'String'],
+        \ 'Number': ['@number', 'Number'],
+        \ 'Boolean': ['@boolean', 'Boolean'],
+        \ 'Regexp': ['@string.regex', 'String'],
+        \ 'Operator': ['@operator', 'Operator'],
+        \ 'Decorator': ['@symbol', 'Identifier'],
+        \ 'Deprecated': ['@text.strike', 'CocDeprecatedHighlight']
         \ }
     for [key, value] in items(hlMap)
       let ts = get(value, 0, '')
       let fallback = get(value, 1, '')
-      execute 'hi default link CocSem'.key.' '.(hlexists(ts) ? ts : fallback)
+      execute 'hi default link CocSem'.key.' '.(coc#highlight#valid(ts) ? ts : fallback)
     endfor
   endif
   let symbolMap = {
-      \ 'Keyword': ['TSKeyword', 'Keyword'],
-      \ 'Namespace': ['TSNamespace', 'Include'],
-      \ 'Class': ['TSConstructor', 'Special'],
-      \ 'Method': ['TSMethod', 'Function'],
-      \ 'Property': ['TSProperty', 'Identifier'],
-      \ 'Text': ['TSText', 'CocSymbolDefault'],
-      \ 'Unit': ['TSUnit', 'CocSymbolDefault'],
-      \ 'Value': ['TSValue', 'CocSymbolDefault'],
-      \ 'Snippet': ['TSSnippet', 'CocSymbolDefault'],
-      \ 'Color': ['TSColor', 'Float'],
-      \ 'Reference': ['TSTextReference', 'Constant'],
-      \ 'Folder': ['TSFolder', 'CocSymbolDefault'],
-      \ 'File': ['TSFile', 'Statement'],
-      \ 'Module': ['TSModule', 'Statement'],
-      \ 'Package': ['TSPackage', 'Statement'],
-      \ 'Field': ['TSField', 'Identifier'],
-      \ 'Constructor': ['TSConstructor', 'Special'],
-      \ 'Enum': ['TSEnum', 'CocSymbolDefault'],
-      \ 'Interface': ['TSInterface', 'CocSymbolDefault'],
-      \ 'Function': ['TSFunction', 'Function'],
-      \ 'Variable': ['TSVariableBuiltin', 'Special'],
-      \ 'Constant': ['TSConstant', 'Constant'],
-      \ 'String': ['TSString', 'String'],
-      \ 'Number': ['TSNumber', 'Number'],
-      \ 'Boolean': ['TSBoolean', 'Boolean'],
-      \ 'Array': ['TSArray', 'CocSymbolDefault'],
-      \ 'Object': ['TSObject', 'CocSymbolDefault'],
-      \ 'Key': ['TSKey', 'Identifier'],
-      \ 'Null': ['TSNull', 'Type'],
-      \ 'EnumMember': ['TSEnumMember', 'Identifier'],
-      \ 'Struct': ['TSStruct', 'Keyword'],
-      \ 'Event': ['TSEvent', 'Constant'],
-      \ 'Operator': ['TSOperator', 'Operator'],
-      \ 'TypeParameter': ['TSParameter', 'Identifier'],
+      \ 'Keyword': ['@keyword', 'Keyword'],
+      \ 'Namespace': ['@namespace', 'Include'],
+      \ 'Class': ['@constructor', 'Special'],
+      \ 'Method': ['@method', 'Function'],
+      \ 'Property': ['@property', 'Identifier'],
+      \ 'Text': ['@text', 'CocSymbolDefault'],
+      \ 'Unit': ['@unit', 'CocSymbolDefault'],
+      \ 'Value': ['@value', 'CocSymbolDefault'],
+      \ 'Snippet': ['@snippet', 'CocSymbolDefault'],
+      \ 'Color': ['@color', 'Float'],
+      \ 'Reference': ['@text.reference', 'Constant'],
+      \ 'Folder': ['@folder', 'CocSymbolDefault'],
+      \ 'File': ['@file', 'Statement'],
+      \ 'Module': ['@module', 'Statement'],
+      \ 'Package': ['@package', 'Statement'],
+      \ 'Field': ['@field', 'Identifier'],
+      \ 'Constructor': ['@constructor', 'Special'],
+      \ 'Enum': ['@type', 'CocSymbolDefault'],
+      \ 'Interface': ['@type', 'CocSymbolDefault'],
+      \ 'Function': ['@function', 'Function'],
+      \ 'Variable': ['@variable.builtin', 'Special'],
+      \ 'Constant': ['@constant', 'Constant'],
+      \ 'String': ['@string', 'String'],
+      \ 'Number': ['@number', 'Number'],
+      \ 'Boolean': ['@boolean', 'Boolean'],
+      \ 'Array': ['@array', 'CocSymbolDefault'],
+      \ 'Object': ['@object', 'CocSymbolDefault'],
+      \ 'Key': ['@key', 'Identifier'],
+      \ 'Null': ['@null', 'Type'],
+      \ 'EnumMember': ['@property', 'Identifier'],
+      \ 'Struct': ['@structure', 'Keyword'],
+      \ 'Event': ['@constant', 'Constant'],
+      \ 'Operator': ['@operator', 'Operator'],
+      \ 'TypeParameter': ['@parameter', 'Identifier'],
       \ }
   for [key, value] in items(symbolMap)
-    let hlGroup = hlexists(value[0]) ? value[0] : get(value, 1, 'CocSymbolDefault')
+    let hlGroup = coc#highlight#valid(value[0]) ? value[0] : get(value, 1, 'CocSymbolDefault')
     if hlexists(hlGroup)
       execute 'hi default CocSymbol'.key.' '.coc#highlight#get_hl_command(synIDtrans(hlID(hlGroup)), 'fg', '223', '#ebdbb2')
     endif
   endfor
-endfunction
-
-function! s:FormatFromSelected(type)
-  call CocActionAsync('formatSelected', a:type)
-endfunction
-
-function! s:CodeActionFromSelected(type)
-  call CocActionAsync('codeAction', a:type)
 endfunction
 
 function! s:ShowInfo()
@@ -660,6 +668,23 @@ function! s:ShowInfo()
   endif
 endfunction
 
+function! s:CursorRangeFromSelected(type, ...) abort
+  " add range by operator
+  call coc#rpc#request('cursorsSelect', [bufnr('%'), 'operator', a:type])
+endfunction
+
+function! s:FormatFromSelected(type)
+  call CocActionAsync('formatSelected', a:type)
+endfunction
+
+function! s:CodeActionFromSelected(type)
+  call CocActionAsync('codeAction', a:type)
+endfunction
+
+function! s:CodeActionRefactorFromSelected(type)
+  call CocActionAsync('codeAction', a:type, ['refactor'] ,v:true)
+endfunction
+
 command! -nargs=0 CocOutline      :call coc#rpc#notify('showOutline', [])
 command! -nargs=? CocDiagnostics  :call s:OpenDiagnostics(<f-args>)
 command! -nargs=0 CocInfo         :call s:ShowInfo()
@@ -670,6 +695,7 @@ command! -nargs=0 CocConfig       :call s:OpenConfig()
 command! -nargs=0 CocLocalConfig  :call coc#rpc#notify('openLocalConfig', [])
 command! -nargs=0 CocRestart      :call coc#rpc#restart()
 command! -nargs=0 CocStart        :call coc#rpc#start_server()
+command! -nargs=0 CocPrintErrors  :call coc#rpc#show_errors()
 command! -nargs=1 -complete=custom,s:LoadedExtensions  CocWatch    :call coc#rpc#notify('watchExtension', [<f-args>])
 command! -nargs=+ -complete=custom,s:SearchOptions  CocSearch    :call coc#rpc#notify('search', [<f-args>])
 command! -nargs=+ -complete=custom,s:ExtensionList  CocUninstall :call CocActionAsync('uninstallExtension', <f-args>)
@@ -685,8 +711,13 @@ command! -nargs=0 CocUpdate       :call coc#util#update_extensions(1)
 command! -nargs=0 -bar CocUpdateSync   :call coc#util#update_extensions()
 command! -nargs=* -bar -complete=custom,s:InstallOptions CocInstall   :call coc#util#install_extension([<f-args>])
 
-call s:Highlight()
 call s:Enable(1)
+augroup coc_dynamic_autocmd
+augroup END
+augroup coc_dynamic_content
+augroup END
+augroup coc_dynamic_option
+augroup END
 
 " Default key-mappings for completion
 if empty(mapcheck('<C-n>', 'i'))
@@ -716,14 +747,18 @@ endif
 
 vnoremap <silent> <Plug>(coc-range-select)          :<C-u>call       CocActionAsync('rangeSelect',     visualmode(), v:true)<CR>
 vnoremap <silent> <Plug>(coc-range-select-backward) :<C-u>call       CocActionAsync('rangeSelect',     visualmode(), v:false)<CR>
-nnoremap <Plug>(coc-range-select)          :<C-u>call       CocActionAsync('rangeSelect',     '', v:true)<CR>
-nnoremap <Plug>(coc-codelens-action)       :<C-u>call       CocActionAsync('codeLensAction')<CR>
-vnoremap <silent> <Plug>(coc-format-selected)       :<C-u>call       CocActionAsync('formatSelected',     visualmode())<CR>
-vnoremap <silent> <Plug>(coc-codeaction-selected)   :<C-u>call       CocActionAsync('codeAction',         visualmode())<CR>
-nnoremap <Plug>(coc-codeaction-selected)   :<C-u>set        operatorfunc=<SID>CodeActionFromSelected<CR>g@
-nnoremap <Plug>(coc-codeaction)            :<C-u>call       CocActionAsync('codeAction',         '')<CR>
-nnoremap <Plug>(coc-codeaction-line)       :<C-u>call       CocActionAsync('codeAction',         'currline')<CR>
-nnoremap <Plug>(coc-codeaction-cursor)     :<C-u>call       CocActionAsync('codeAction',         'cursor')<CR>
+nnoremap <Plug>(coc-range-select)                   :<C-u>call       CocActionAsync('rangeSelect',     '', v:true)<CR>
+nnoremap <Plug>(coc-codelens-action)                :<C-u>call       CocActionAsync('codeLensAction')<CR>
+vnoremap <silent> <Plug>(coc-format-selected)       :<C-u>call       CocActionAsync('formatSelected', visualmode())<CR>
+vnoremap <silent> <Plug>(coc-codeaction-selected)   :<C-u>call       CocActionAsync('codeAction', visualmode())<CR>
+vnoremap <Plug>(coc-codeaction-refactor-selected)   :<C-u>call       CocActionAsync('codeAction', visualmode(), ['refactor'], v:true)<CR>
+nnoremap <Plug>(coc-codeaction-selected)            :<C-u>set        operatorfunc=<SID>CodeActionFromSelected<CR>g@
+nnoremap <Plug>(coc-codeaction-refactor-selected)   :<C-u>set        operatorfunc=<SID>CodeActionRefactorFromSelected<CR>g@
+nnoremap <Plug>(coc-codeaction)                     :<C-u>call       CocActionAsync('codeAction', '')<CR>
+nnoremap <Plug>(coc-codeaction-line)                :<C-u>call       CocActionAsync('codeAction', 'currline')<CR>
+nnoremap <Plug>(coc-codeaction-cursor)              :<C-u>call       CocActionAsync('codeAction', 'cursor')<CR>
+nnoremap <Plug>(coc-codeaction-refactor)            :<C-u>call       CocActionAsync('codeAction', 'cursor', ['refactor'], v:true)<CR>
+nnoremap <Plug>(coc-codeaction-source)              :<C-u>call       CocActionAsync('codeAction', '', ['source'], v:true)<CR>
 nnoremap <silent> <Plug>(coc-rename)                :<C-u>call       CocActionAsync('rename')<CR>
 nnoremap <silent> <Plug>(coc-format-selected)       :<C-u>set        operatorfunc=<SID>FormatFromSelected<CR>g@
 nnoremap <silent> <Plug>(coc-format)                :<C-u>call       CocActionAsync('format')<CR>

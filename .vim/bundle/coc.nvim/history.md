@@ -1,3 +1,157 @@
+# 2023-01-30
+
+- Always show `cancellable` progress as notification without check
+  `notification.statusLineProgress`.
+
+# 2023-01-29
+
+- Exclude `source` actions when request code actions with range.
+- Any character can be used for channel name.
+
+# 2023-01-26
+
+- Add escape support to `coc#status()`.
+
+# 2023-01-24
+
+- Add `encoding` and `CancellationToken` support for `runCommand` function.
+
+# 2023-01-23
+
+- Make `vscode.open` command work with file uri.
+- Cancel option for `workspace.registerExprKeymap()`.
+- Support `suggest.filterOnBackspace` configuration.
+
+# 2023-01-22
+
+- `maxRestartCount` configuration for configured language server.
+
+# 2022-12-25
+
+- Create symbol tree from SymbolInformation list.
+
+# 2022-12-23
+
+- Support `URI` as param for API `workspace.jumpTo()`.
+
+# 2022-12-22
+
+- Support popup window for window related APIs.
+
+# 2022-12-21
+
+- When create `CocSem` highlight group, replace invalid character of token types
+  and token modifiers with underline.
+
+# 2022-12-20
+
+- Export `Buffer.setKeymap` and `Buffer.deleteKeymap` with vim and neovim support.
+- Make `workspace.registerLocalKeymap` accept bufnr argument.
+
+# 2022-12-12
+
+- Allow configuration of `window` scoped used by folder configuration file, like
+  VSCode.
+- Add location support for `getHover` action.
+- Use unique id for each tab on vim.
+- Chinese word segmentation for keywords.
+
+# 2022-12-05
+
+- Add `switchConsole` method to `LanguageClient`
+
+# 2022-12-03
+
+- Add configuration `suggest.insertMode`.
+
+# 2022-12-02
+
+- Expand variables for string configuration value.
+
+# 2022-11-30
+
+- File fragment support for `workspace.jumpTo()`.
+- Support `g:coc_open_url_command`.
+- Support `contributes.configuration` from extension as array.
+
+# 2022-11-29
+
+- Add documentations for develop of coc.nvim extensions.
+- Remove unused variable `g:coc_channel_timeout`.
+
+# 2022-11-28
+
+- Placeholder and update value support for `InputBox` and `QuickPick`.
+- `triggerOnly` option property for vim completion source.
+- Export `getExtensionById` from `extensions` module.
+
+# 2022-11-26
+
+- Use CTRL-R expression instead of timer for pum related functions:
+
+  - `coc#pum#insert()`
+  - `coc#pum#one_more()`
+  - `coc#pum#next()`
+  - `coc#pum#prev()`
+  - `coc#pum#stop()`
+  - `coc#pum#cancel()`
+  - `coc#pum#confirm()`
+
+# 2022-11-25
+
+- Avoid view change on list create.
+- Add configurations `links.enable` and `links.highlight`.
+- Use cursorline for list on neovim (to have correct highlight).
+- Fix highlight not work on neovim 0.5.0 by use `luaeval`.
+
+# 2022-11-22
+
+- Add command `document.toggleCodeLens`.
+
+# 2022-11-21
+
+- Add `CocAction('addWorkspaceFolder')`.
+
+# 2022-11-20
+
+- Support code lens feature on vim9.
+- `codeLens.subseparator` default changed to `|`, like VSCode.
+- Add configuration `coc.preferences.enableGFMBreaksInMarkdownDocument`, default to `true`
+- Add key-mappings `<Plug>(coc-codeaction-selected)` and `<Plug>(coc-codeaction-refactor-selected)`.
+
+# 2022-11-19
+
+- Create highlights after VimEnter.
+- Action 'organizeImport' return false instead of throw error when import code
+  action not found.
+
+# 2022-11-18
+
+- Throw error when rpc request error, instead of echo message.
+
+# 2022-11-13
+
+- Plugin emit ready after extensions activated.
+
+# 2022-11-12
+
+- Not cancel completion when request for in complete sources.
+
+# 2022-11-11
+
+- Support filter and display completion items with different start positions.
+- Remove configuration `suggest.fixInsertedWord`, insert word would always
+  be fixed.
+- Configuration `suggest.invalidInsertCharacters` default to line break
+  characters.
+
+# 2022-11-10
+
+- Not reset 'Search' highlight on float window as it could be used.
+- Note remap `<esc>` on float preview window.
+- Add new action `feedkeys!` to list.
+- Add new configuration `list.floatPreview`.
+
 # 2022-11-07
 
 - Add API `CocAction('snippetInsert')` for snippet insert from vim plugin.
