@@ -55,7 +55,9 @@
   ra = "! f() { git remote add $1 git@github.com:$1/$(basename $(git remote show -n origin | grep Fetch | cut -d: -f2-)); git remote -v;}; f"
   cl = "! f() { git clone git@github.com:rlinehan/$1.git ;}; f"
 
+  # git vimadd <org> <repo> <branch>(optional, if not master)
   vimadd = "! f() { git subtree add --prefix .vim/bundle/$2 https://github.com/$1/$2.git ${3:-master} --squash;}; f"
+  # git vimupdate <org> <repo> <branch>(optional, if not master)
   # This... isn't entirely working in terms of what it reports
   vimupdate = "! f() { git subtree pull --prefix .vim/bundle/$2 https://github.com/$1/$2.git ${3:-master} --squash -m \"Merge commit `git rev-parse FETCH_HEAD` from ${3:-master}\";}; f"
 
