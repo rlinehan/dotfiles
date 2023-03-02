@@ -1,9 +1,10 @@
 # Colors (Solarized Dark) - from https://github.com/alacritty/alacritty/wiki/Color-schemes#solarized
+
 colors:
   # Default colors
   primary:
     background: '#002b36' # base03
-    foreground: '#839496' # base0
+    foreground: '#839496' # base0 - light grey
 
   # Cursor colors
   cursor:
@@ -29,8 +30,8 @@ colors:
     yellow:  '#657b83' # base00
     blue:    '#839496' # base0
     magenta: '#6c71c4' # violet
-    cyan:    '#93a1a1' # base1
-    white:   '#fdf6e3' # base3
+    cyan:    '#93a1a1' # base1 - light grey
+    white:   '#fdf6e3' # base3 - white
 
   # Vi mode cursor colors
   #
@@ -55,6 +56,9 @@ colors:
     colors.footer.bar:
       background: '#6c71c4' # violet
       foreground: '#002b36' # base03
+
+# If `true`, bold text is drawn using the bright color variants.
+draw_bold_text_with_bright_colors: false
 
 font:
   normal:
