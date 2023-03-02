@@ -1,8 +1,9 @@
 scriptencoding utf-8
 let s:is_vim = !has('nvim')
-let s:clear_match_by_window = has('nvim-0.6.0') || has('patch-8.1.1084')
+let s:nvim_50 = has('nvim-0.5.0')
+let s:nvim_60 = has('nvim-0.6.0')
+let s:clear_match_by_window = s:nvim_60 || s:is_vim
 let s:set_extmark = has('nvim') && exists('*nvim_buf_set_extmark')
-let s:prop_offset = get(g:, 'coc_text_prop_offset', 1000)
 let s:namespace_map = {}
 let s:ns_id = 1
 let s:diagnostic_hlgroups = ['CocErrorHighlight', 'CocWarningHighlight', 'CocInfoHighlight', 'CocHintHighlight', 'CocDeprecatedHighlight', 'CocUnusedHighlight']
@@ -34,7 +35,7 @@ function! coc#highlight#buffer_update(bufnr, key, highlights, ...) abort
     return
   endif
   let hls = map(copy(a:highlights), "{'hlGroup':v:val[0],'lnum':v:val[1],'colStart':v:val[2],'colEnd':v:val[3],'combine':get(v:val,4,1),'start_incl':get(v:val,5,0),'end_incl':get(v:val,6,0)}")
-  if len(hls) <= g:coc_highlight_maximum_count || get(g:, 'coc_node_env', '') ==# 'test'
+  if len(hls) <= g:coc_highlight_maximum_count
     call coc#highlight#update_highlights(a:bufnr, a:key, hls, 0, -1, priority)
     return
   endif
@@ -152,8 +153,13 @@ function! coc#highlight#get_highlights(bufnr, key, ...) abort
   endif
   let start = get(a:, 1, 0)
   let end = get(a:, 2, -1)
-  if has('nvim-0.5.0')
+  if s:nvim_60
     return v:lua.require('coc.highlight').getHighlights(a:bufnr, a:key, start, end)
+  elseif s:nvim_50
+    return luaeval(
+          \ 'require("coc.highlight").getHighlights(_A[1],_A[2],_A[3],_A[4])',
+          \ [a:bufnr, a:key, start, end]
+          \ )
   endif
   let res = []
   let ns = s:namespace_map[a:key]
@@ -205,8 +211,14 @@ function! coc#highlight#set(bufnr, key, highlights, priority) abort
     return
   endif
   let ns = coc#highlight#create_namespace(a:key)
-  if has('nvim-0.5.0')
+  let g:c = 1
+  if s:nvim_60
     call v:lua.require('coc.highlight').set(a:bufnr, ns, a:highlights, a:priority)
+  elseif s:nvim_50
+    call luaeval(
+          \ 'require("coc.highlight").set(_A[1],_A[2],_A[3],_A[4])',
+          \ [a:bufnr, ns, a:highlights, a:priority]
+          \ )
   else
     if len(a:highlights) > g:coc_highlight_maximum_count
       call s:add_highlights_timer(a:bufnr, ns, a:highlights, a:priority)
@@ -250,7 +262,7 @@ function! coc#highlight#del_markers(bufnr, key, ids) abort
   endfor
 endfunction
 
-" highlight LSP range,
+" highlight LSP range, opts contains 'combine' 'priority' 'start_incl' 'end_incl'
 function! coc#highlight#ranges(bufnr, key, hlGroup, ranges, ...) abort
   let bufnr = a:bufnr == 0 ? bufnr('%') : a:bufnr
   if !bufloaded(bufnr) || !exists('*getbufline')
@@ -437,13 +449,17 @@ function! coc#highlight#compose(fg, bg) abort
   return cmd
 endfunction
 
+function! coc#highlight#valid(hlGroup) abort
+  return hlexists(a:hlGroup) && execute('hi '.a:hlGroup, 'silent!') !~# ' cleared$'
+endfunction
+
 " Compose hlGroups with foreground and background colors.
 function! coc#highlight#compose_hlgroup(fgGroup, bgGroup) abort
   let hlGroup = 'Fg'.a:fgGroup.'Bg'.a:bgGroup
   if a:fgGroup ==# a:bgGroup
     return a:fgGroup
   endif
-  if hlexists(hlGroup) && match(execute('hi '.hlGroup, 'silent!'), 'cleared') == -1
+  if coc#highlight#valid(hlGroup)
     return hlGroup
   endif
   let cmd = coc#highlight#compose(a:fgGroup, a:bgGroup)
@@ -491,6 +507,7 @@ function! coc#highlight#create_bg_command(group, amount) abort
   let normal = coc#highlight#get_hex_color(synIDtrans(hlID('Normal')), 'bg', &background ==# 'dark' ? '#282828' : '#fefefe')
   let bg = coc#highlight#get_hex_color(id, 'bg', normal)
   let hex = a:amount > 0 ? coc#color#darken(bg, a:amount) : coc#color#lighten(bg, -a:amount)
+
   let ctermbg = coc#color#rgb2term(strpart(hex, 1))
   if s:term && !s:check_ctermbg(id, ctermbg) && abs(a:amount) < 20.0
     return coc#highlight#create_bg_command(a:group, a:amount * 2)
@@ -543,11 +560,7 @@ function! coc#highlight#match_ranges(winid, bufnr, ranges, hlGroup, priority) ab
   endif
   if !s:clear_match_by_window
     let curr = win_getid()
-    if has('nvim')
-      noa call nvim_set_current_win(winid)
-    else
-      noa call win_gotoid(winid)
-    endif
+    noa call win_gotoid(winid)
   endif
   let ids = []
   for range in a:ranges
@@ -587,11 +600,7 @@ function! coc#highlight#match_ranges(winid, bufnr, ranges, hlGroup, priority) ab
     endif
   endfor
   if !s:clear_match_by_window
-    if has('nvim')
-      noa call nvim_set_current_win(curr)
-    else
-      noa call win_gotoid(curr)
-    endif
+    noa call win_gotoid(curr)
   endif
   return ids
 endfunction

@@ -82,7 +82,7 @@ CodeLens~
 
 	Subseparator between codeLenses in virtual text.
 
-	Scope: `resource`, default: `" "`
+	Scope: `resource`, default: `" | "`
 
 ------------------------------------------------------------------------------
 Colors~
@@ -566,9 +566,21 @@ InlayHint~
 ------------------------------------------------------------------------------
 Links~
 							*coc-config-links*
+"links.enable" 						*coc-config-links-enable*
+
+	Enable document links.
+
+	Scope: `language-overridable`, default: `true`
+
+"links.highlight"					*coc-config-links-highlight*
+
+	Use CocLink highlight group to highlight links.
+
+	Scope: `application`, default: `false`
+
 "links.tooltip"						*coc-config-links-tooltip*
 
-	Show tooltip of link under cursor on CursorHold, neovim only.
+	Show tooltip of link under cursor on CursorHold.
 
 	Scope: `application`, default: `false`
 
@@ -587,6 +599,12 @@ List~
 	delimited by spaces.
 
 	Scope: `application`, default: `true`
+
+"list.floatPreview" 					*coc-config-list-floatPreview*
+
+	Enable preview with float window/popup, default: `false`.
+
+	Scope: `application`, default: `false`
 
 "list.height"						*coc-config-list-height*
 
@@ -1159,7 +1177,7 @@ Suggest~
 
 	Enable float window with documentation aside with popupmenu.
 
-	Scope: `language-overridable`, default: `true"`
+	Scope: `language-overridable`, default: `true`
 
 "suggest.enablePreselect"				*coc-config-suggest-enablePreselect*
 
@@ -1168,11 +1186,18 @@ Suggest~
 
 	Scope: `application`, default: `true`
 
-"suggest.fixInsertedWord"				*coc-config-suggest-fixInsertedWord*
+"suggest.filterGraceful" 				*coc-config-suggest-filterGraceful*
 
-	Make inserted word replace word characters after cursor position.
+	Controls whether filtering and sorting suggestions accounts for small
+	typos.
 
-	Scope: `application`, default: `true`
+	Scope: `language-overridable`, default: `true`
+
+"suggest.filterOnBackspace" 				*coc-config-suggest-filterOnBackspace*
+
+	Filter complete items on backspace.
+
+	Scope: `language-overridable`, default: `true`
 
 "suggest.floatConfig"					*coc-config-suggest-floatConfig*
 
@@ -1198,6 +1223,12 @@ Suggest~
 
 	Scope: `language-overridable`, default: `null`
 
+"suggest.insertMode" 					*coc-config-suggest-insertMode*
+
+	Controls whether words are overwritten when accepting completions.
+
+	Scope: `language-overridable`, default: `“replace"`
+
 "suggest.ignoreRegexps"					*coc-config-suggest-ignoreRegexps*
 
 	Regexps to ignore when trigger suggest.
@@ -1209,7 +1240,7 @@ Suggest~
 	Invalid character for strip valid word when inserting text of complete
 	item.
 
-	Scope: `application`, default: `[" ","(","<","{","[","\r","\n"]`
+	Scope: `application`, default: `["\r","\n"]`
 
 "suggest.labelMaxLength"				*coc-config-suggest-labelMaxLength*
 
@@ -1336,6 +1367,12 @@ Suggest~
 ------------------------------------------------------------------------------
 Tree~
 							*coc-config-tree*
+"tree.openedIcon"					*coc-config-tree-openedIcon*
+
+	Opened icon of tree view.
+
+	Scope: `application`, default: `"-"`
+
 "tree.closedIcon"					*coc-config-tree-closedIcon*
 
 	Closed icon of tree view.
@@ -1397,12 +1434,6 @@ Tree~
 
 	Scope: `application`, default: `"<space>"`
 
-"tree.openedIcon"					*coc-config-tree-openedIcon*
-
-	Opened icon of tree view.
-
-	Scope: `application`, default: `"-"`
-
 ------------------------------------------------------------------------------
 TypeHierarchy~
 							*coc-config-typeHierarchy*
@@ -1427,7 +1458,7 @@ TypeHierarchy~
 ------------------------------------------------------------------------------
 Workspace~
 							*coc-config-workspace*
-"workspace.rootPatterns"				*coc-configu-workspace-rootPatterns*
+"workspace.rootPatterns"				*coc-config-workspace-rootPatterns*
 
 	Root patterns to resolve workspaceFolder from parent folders of opened
 	files, resolved from up to down.
@@ -1523,6 +1554,12 @@ Preferences~
 
 	Scope: `application`, default: `true`
 
+"coc.preferences.enableGFMBreaksInMarkdownDocument"	*coc-preferences-enableGFMBreaksInmakrdownDocument*
+
+	Exclude GFM breaks in markdown document.
+
+	Scope: `application`, default: `true`
+
 "coc.preferences.extensionUpdateCheck"			*coc-preferences-extensionUpdateCheck*
 
 	Interval for check extension update, could be "daily", "weekly" or
@@ -1541,6 +1578,12 @@ Preferences~
 	Set to true to enable formatting on save.
 
 	Scope: `language-overridable`, default: `false`
+
+"coc.preferences.formatOnSaveTimeout"			*coc-preferences-formatOnSaveTimeout*
+
+	How long before the format command run on save will time out.
+
+	Scope: `language-overridable`, default: `200`
 
 "coc.preferences.formatOnType"				*coc-preferences-formatOnType*
 
@@ -1644,6 +1687,9 @@ Languageserver~
 	- "filetypes": Supported filetypes, add * in array for all filetypes.
 	  Note: it's required for start the languageserver, please make sure
 	  your filetype is expected by `:CocCommand document.echoFiletype` command
+
+	- 'maxRestartCount': Maximum restart count when server closed in the
+	  last 3 minutes, default to `4`.
 
 	- "additionalSchemes": Additional URI schemes, default schemes
 	  including file & untitled.
