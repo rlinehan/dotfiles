@@ -1,9 +1,9 @@
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
+PATH=/usr/local/bin:$HOME/bin:$PATH
+
 # Configure homebrew if it exists
 if [ -d "/opt/homebrew" ]; then eval "$(/opt/homebrew/bin/brew shellenv)"; fi
-
-PATH=/usr/local/bin:$HOME/bin:$PATH
 
 # Configure RVM if it exists
 if [ -d "$HOME/.rvm/bin"  ]; then
