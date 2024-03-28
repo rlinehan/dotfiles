@@ -102,6 +102,7 @@
   excludesfile = ~/.git-ignore
   autocrlf = input
   safecrlf = true
+  hooksPath = /dev/null
 [push]
   default = current
 [pull]
