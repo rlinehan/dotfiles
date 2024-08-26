@@ -9,4 +9,5 @@ alias composite_ks='ln -s ~/momento/kotlin-kitchensink/ ./composites/momento.kit
 alias composite_client='ln -s ~/momento/client-protos/kotlin-messages ./composites/momento.client_protos'
 alias install_ts='cd infrastructure/common && npm install && npm run build && cd ../.. && cd infrastructure/aws && npm install && npm run build && cd ../.. && cd infrastructure/gcp && npm install && npm run build && cd ../..'
 alias myclippy='cargo fmt && cargo clippy --all-targets --all-features -- -D warnings -W clippy::unwrap_used -W clippy::todo -W clippy::panic_in_result_fn -W clippy::expect_used 2>&1 >/dev/null | less'
-alias myrusttest='cargo fmt -- --check && cargo clippy --all-targets --all-features -- -D warnings -W clippy::unwrap_used -W clippy::todo -W clippy::panic_in_result_fn -W clippy::expect_used && cargo build --frozen && cargo test -- --nocapture'
+alias mmclippy='cargo fmt && cargo clippy --all-targets --all-features -- -D warnings -W clippy::unwrap_used -A clippy::enum-variant-names -A clippy::expect_fun_call'
+alias dockerddb='docker run -p 8000:8000 amazon/dynamodb-local'
