@@ -32,32 +32,46 @@ if [ -f "$HOME/.profile.local" ]; then . "$HOME/.profile.local"; fi
 
 #### history ####
 
+# Hint: list options set with `set -o`
+
 HISTFILE=${ZDOTDIR:-$HOME}/.zsh_history
+# the number of items for the internal history list
+export HISTSIZE=1000000
+# maximum number of items for the history file
+export SAVEHIST=1000000
 # share history across multiple zsh sessions
 setopt SHARE_HISTORY
-# append to history
-setopt APPEND_HISTORY
-# adds commands as they are typed, not at shell exit
-setopt INC_APPEND_HISTORY
-# do not store duplications
-setopt HIST_IGNORE_DUPS
+# do not save duplicated command
+setopt HIST_IGNORE_ALL_DUPS
 # removes blank lines from history
 setopt HIST_REDUCE_BLANKS
-# show the substituted command in the prompt before execution
+# show command with history expansion to user before running it
 setopt HIST_VERIFY
+# record command start time
+setopt EXTENDED_HISTORY
+# show all the history stored. - from https://jdhao.github.io/2021/03/24/zsh_history_setup/
+#alias history="fc -l 1"
+
+# use up and down arrows to search with characters typed
+bindkey "^[[A" history-beginning-search-backward
+bindkey "^[[B" history-beginning-search-forward
 
 #### end history ####
+
+#### misc ####
 
 # turn on command correction
 setopt CORRECT
 
 # emacs mode
 bindkey -e
+# default editor vim
+export EDITOR=vim
 
-#### search ####
-bindkey "^[[A" history-beginning-search-backward
-bindkey "^[[B" history-beginning-search-forward
-#### end search ####
+# source bash aliases... these should just work?
+[ -f ~/.bash_aliases ] && source ~/.bash_aliases
+
+#### end misc ####
 
 #### prompt ####
 setopt PROMPT_SUBST
@@ -90,20 +104,18 @@ ps1_git()
   if ! git rev-parse --git-dir > /dev/null 2>&1; then
     return 0
   else
-    echo "$(__git_ps1 "(git:%s$(ps1_git_status):$(ps1_git_sha))")"
+    echo "$(__git_ps1 " (git:%s$(ps1_git_status):$(ps1_git_sha))")"
 
   fi
 }
 
 # ruth@griddle:~/dotfiles (git:main+*:50f08eac1)
 # $
-# user(green/red for superuser)@host(cyan):directory(magenta) (git(blue))
-PROMPT='%(!.%F{red}%n%f.%F{green}%n%f)@%F{cyan}%m%f:%F{magenta}%~%f %F{blue}$(ps1_git)%f ${NEWLINE}$ '
+# user(green/red for superuser)@host(cyan):directory(magenta) ?exit code(purple) (git(blue))
+PROMPT='%(!.%F{red}%n%f.%F{green}%n%f)@%F{cyan}%m%f:%F{magenta}%~%f%F{blue}$(ps1_git)%f %F{098}?%?%f ${NEWLINE}$ '
 
 #### end prompt ####
 
-[ -f ~/.bash_aliases ] && source ~/.bash_aliases
-export EDITOR=vim
 export PATH
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
