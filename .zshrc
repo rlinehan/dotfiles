@@ -116,6 +116,23 @@ PROMPT='%(!.%F{red}%n%f.%F{green}%n%f)@%F{cyan}%m%f:%F{magenta}%~%f%F{blue}$(ps1
 
 #### end prompt ####
 
+#### completion ####
+
+export fpath=($fpath /Users/ruth/.momento/autocomplete)
+
+# The following lines were added by compinstall
+zstyle ':completion:*' completer _complete _ignored
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' menu select=0
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle :compinstall filename '/Users/ruth/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+
+#### end completion ####
+
 export PATH
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
