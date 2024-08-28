@@ -94,3 +94,8 @@ shell:
 # If this is `true`, the cursor will be rendered as a hollow box when the
 # # window is not focused.
 unfocused_hollow: true
+
+# Move cursor word-by-word with alt + right/left arrow
+key_bindings:
+  - { key: Right, mods: Alt, chars: "\x1BF" }
+  - { key: Left,  mods: Alt, chars: "\x1BB" }
