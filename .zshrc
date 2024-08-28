@@ -111,8 +111,8 @@ ps1_git()
 
 # ruth@griddle:~/dotfiles (git:main+*:50f08eac1)
 # $
-# user(green/red for superuser)@host(cyan):directory(magenta) ?exit code(purple) (git(blue))
-PROMPT='%(!.%F{red}%n%f.%F{green}%n%f)@%F{cyan}%m%f:%F{magenta}%~%f%F{blue}$(ps1_git)%f %F{098}?%?%f ${NEWLINE}$ '
+# user(green/red for superuser)@host(cyan):directory(magenta) (?exit code(purple)) (git(blue))
+PROMPT='%(!.%F{red}%n%f.%F{green}%n%f)@%F{cyan}%m%f:%F{magenta}%~%f%F{blue}$(ps1_git)%f %F{098}(?%?)%f ${NEWLINE}$ '
 
 #### end prompt ####
 
