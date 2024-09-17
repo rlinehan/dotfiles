@@ -54,7 +54,9 @@ setopt EXTENDED_HISTORY
 
 # use up and down arrows to search with characters typed
 bindkey "^[[A" history-beginning-search-backward
+bindkey "^[OA" history-beginning-search-backward
 bindkey "^[[B" history-beginning-search-forward
+bindkey "^[OB" history-beginning-search-forward
 
 #### end history ####
 
@@ -118,18 +120,29 @@ PROMPT='%(!.%F{red}%n%f.%F{green}%n%f)@%F{cyan}%m%f:%F{magenta}%~%f%F{blue}$(ps1
 
 #### completion ####
 
-export fpath=($fpath /Users/ruth/.momento/autocomplete)
+# mm
+export fpath=($fpath "$HOME/.momento/autocomplete")
 
 # The following lines were added by compinstall
 zstyle ':completion:*' completer _complete _ignored
 zstyle ':completion:*' list-colors ''
 zstyle ':completion:*' menu select=0
 zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
-zstyle :compinstall filename '/Users/ruth/.zshrc'
-
-autoload -Uz compinit
-compinit
+zstyle :compinstall filename "$HOME/.zshrc"
 # End of lines added by compinstall
+
+autoload bashcompinit && bashcompinit
+autoload -Uz compinit && compinit
+
+# aws
+complete -C 'aws_completer' aws
+compdef _aws_profiles -value-,AWS_PROFILE,-default-
+
+function _aws_profiles() {
+  local -a profiles
+  profiles=($(cat ~/.aws/config | sed -n -e 's/\[\s*profile\s*\(.*\)\]/\1/p'))
+  _values 'AWS_PROFILE' $profiles
+}
 
 #### end completion ####
 
