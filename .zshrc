@@ -52,12 +52,6 @@ setopt EXTENDED_HISTORY
 # show all the history stored. - from https://jdhao.github.io/2021/03/24/zsh_history_setup/
 #alias history="fc -l 1"
 
-# use up and down arrows to search with characters typed
-bindkey "^[[A" history-beginning-search-backward
-bindkey "^[OA" history-beginning-search-backward
-bindkey "^[[B" history-beginning-search-forward
-bindkey "^[OB" history-beginning-search-forward
-
 #### end history ####
 
 #### misc ####
@@ -145,6 +139,15 @@ function _aws_profiles() {
 }
 
 #### end completion ####
+
+
+# use up and down arrows to search history with characters typed
+# this needs to be later in config
+bindkey "^[[A" history-beginning-search-backward
+bindkey "^[OA" history-beginning-search-backward
+bindkey "^[[B" history-beginning-search-forward
+bindkey "^[OB" history-beginning-search-forward
+
 
 export PATH
 
