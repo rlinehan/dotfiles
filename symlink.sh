@@ -19,6 +19,14 @@ then
   mkdir "$HOME/.config"
 fi
 
+# handle there already being a bin/ and symlink individual files
+BIN_DIR_FILES=`ls -a bin | egrep -v '^\.+$'`
+if [ ! -d "$HOME/bin" ]
+then
+  echo "Creating bin directory"
+  mkdir "$HOME/bin"
+fi
+
 function symlink_files () {
   prefix=""
   if [ -n "$2" ]; then
@@ -40,3 +48,4 @@ function symlink_files () {
 
 symlink_files "$FILES"
 symlink_files "$CONFIG_DIR_FILES" ".config"
+symlink_files "$BIN_DIR_FILES" "bin"
