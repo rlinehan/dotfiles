@@ -1,0 +1,93 @@
+# If this is `true`, the cursor will be rendered as a hollow box when the
+# window is not focused.
+unfocused_hollow = true
+
+##### Color Scheme - Solarized Dark #####
+# https://github.com/alacritty/alacritty-theme/blob/master/themes/solarized_dark.toml
+
+[colors]
+# If `true`, bold text is drawn using the bright color variants.
+draw_bold_text_with_bright_colors = false
+
+# Default colors
+[colors.primary]
+background       = "#002b36" # base03
+foreground       = "#839496" # base 0 - light grey
+
+# Cursor colors
+[colors.cursor]
+text             = "#002b36" # base03
+cursor           = "#839496" # base0
+
+# Normal Colors
+[colors.normal]
+black           = '#073642' # base02
+red             = '#dc322f' # red
+green           = '#859900' # green
+yellow          = '#b58900' # yellow
+blue            = '#268bd2' # blue
+magenta         = '#d33682' # magenta
+cyan            = '#2aa198' # cyan
+white           = '#eee8d5' # base2
+
+# Bright colors
+[colors.bright]
+black           = '#002b36' # base03
+red             = '#cb4b16' # orange
+green           = '#586e75' # base01
+yellow          = '#657b83' # base00
+blue            = '#839496' # base0
+magenta         = '#6c71c4' # violet
+cyan            = '#93a1a1' # base1 - light grey
+white           = '#fdf6e3' # base3 - white
+
+# Search colors
+#
+# Colors used for the search bar and match highlighting.
+[colors.search.focused_match]
+background = "#d33682" # magenta
+foreground = "#002b36" # base03
+[colors.search.matches]
+background = "#6c71c4" #violet
+foreground = "#002b36" #base03
+
+# Vi mode cursor colors
+#
+# Colors for the cursor when the vi mode is active.
+[colors.vi_mode_cursor]
+cursor = "#6c71c4"
+text   = "CellBackground"
+
+[font]
+size = 16
+
+[font.bold]
+family = "Monaco for Powerline"
+
+[font.bold_italic]
+family = "Monaco for Powerline"
+
+[font.italic]
+family = "Monaco for Powerline"
+
+[font.normal]
+family = "Monaco for Powerline"
+
+# Move cursor word-by-word with alt + right/left arrow
+[[keyboard.bindings]]
+chars = "\u001BF"
+key = "Right"
+mods = "Alt"
+[[keyboard.bindings]]
+chars = "\u001BB"
+key = "Left"
+mods = "Alt"
+
+[terminal]
+
+[terminal.shell]
+args = ["--login", "-c", "tmux attach || tmux"]
+program = "/bin/bash"
+
+[window]
+startup_mode = "Maximized"
