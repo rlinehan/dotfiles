@@ -1,7 +1,3 @@
-# If this is `true`, the cursor will be rendered as a hollow box when the
-# window is not focused.
-unfocused_hollow = true
-
 ##### Color Scheme - Solarized Dark #####
 # https://github.com/alacritty/alacritty-theme/blob/master/themes/solarized_dark.toml
 
