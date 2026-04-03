@@ -1,8 +1,8 @@
 
-source ~/.vimrc
+#source ~/.vimrc
 
 
-
+unset textwidth
 set visualbell
 set noerrorbells
 set showmode
