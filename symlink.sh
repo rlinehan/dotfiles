@@ -3,9 +3,9 @@
 DIR=$(pwd)
 
 # list all files in this directory excluding the README, symlink.sh, and
-# script, .git, and .config dirs
+# script, .git, bin, and .config dirs
 #FILES=$(find -s . -maxdepth 1  ! -name "*.md" ! -name "symlink.sh" ! -name "script" ! -name ".config" ! -name ".git" ! -name "." | sed "s/\.\///")
-FILES=`ls -a | grep -v symlink | egrep -v '^\.git$' | egrep -v '^\.+$' | egrep -v '^.*\.md$' | egrep -v '^\.config$'`
+FILES=`ls -a | grep -v symlink | egrep -v '^\.git$' | egrep -v '^\.+$' | egrep -v '^.*\.md$' | egrep -v '^.*\.otf$' | egrep -v '^\.config$' | egrep -v '^bin$'`
 
 # list files in .config/, excluding .config itself
 # this is separated out because unlike .vim/ I don't want to completely clobber
